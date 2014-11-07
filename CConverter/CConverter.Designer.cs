@@ -219,7 +219,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.msCC;
 			this.Name = "CConverter";
-			this.Text = "CConverter";
+			this.Text = "Converter for Character set";
 			this.msCC.ResumeLayout(false);
 			this.msCC.PerformLayout();
 			this.gbFList.ResumeLayout(false);

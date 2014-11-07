@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CConverter
@@ -22,7 +19,7 @@ namespace CConverter
 
 		private void tsmiOFi_Click(object sender, EventArgs e)
 		{
-			const string strFilter = "C/C++ Files (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp";
+			const string strFilter = "C/C++ Files (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp|Flash ActionScript Files(*.as)|*.as";
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = strFilter;
 			ofd.Multiselect = true;
@@ -44,7 +41,8 @@ namespace CConverter
 				DirectoryInfo di = new DirectoryInfo(fdb.SelectedPath);
 				foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
 					if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp")
+						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
+						fi.Extension == ".as")
 					{
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
@@ -62,6 +60,7 @@ namespace CConverter
 			if (_lsFiPath.Count == 0)
 				return;
 
+			tspbCC.Value = 0;
 			tspbCC.Maximum = _lsFiPath.Count;
 
 			tsslCC.Text = "The CodePage of files is Converting...";
@@ -157,7 +156,8 @@ namespace CConverter
 
 					foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
 						if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp")
+						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
+						fi.Extension == ".as")
 						{
 							_lsFiPath.Add(fi.FullName);
 							lbCC.Items.Add(fi.FullName);
@@ -168,7 +168,8 @@ namespace CConverter
 					FileInfo fi = new FileInfo(p);
 
 					if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp")
+						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
+						fi.Extension == ".as")
 					{
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);

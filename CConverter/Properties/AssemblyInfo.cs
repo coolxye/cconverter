@@ -7,11 +7,11 @@ using System.Resources;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("CConverter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Convert encoding of the text file(s) to ANSI or UTF8")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("InA")]
 [assembly: AssemblyProduct("CConverter")]
-[assembly: AssemblyCopyright("Copyright © InA 2012")]
+[assembly: AssemblyCopyright("Copyright © InA 2012-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,6 +33,6 @@ using System.Resources;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.*")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 [assembly: NeutralResourcesLanguageAttribute("")]
