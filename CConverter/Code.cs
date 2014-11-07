@@ -8,58 +8,23 @@ namespace CConverter
 {
 	class Code
 	{
-		public static Encoding GetEncoding(Stream fs)
+		public static Encoding GetEncoding(FileStream fs)
 		{
 			// Unicode: byte[] { 0xFF, 0xFE, 0x41 }
 			// UnicodeBIG: byte[] { 0xFE, 0xFF, 0x00 }
 			// UTF8: byte[] { 0xEF, 0xBB, 0xBF }
 			Encoding ec = Encoding.Default;
 			byte[] bc;
-			BinaryReader br;
 
 			if (fs.Length == 0)
 				return ec;
 
-			br = new BinaryReader(fs, Encoding.Default);
+			bc = new byte[(Int32)fs.Length];
 
-			if (fs.Length < 4)
-			{
-				bc = br.ReadBytes((Int32)fs.Length);
-				if (IsUTF8Bytes(bc))
-					ec = Encoding.UTF8;
+			fs.Read(bc, 0, (Int32)fs.Length);
 
-				br.Close();
-
-				return ec;
-			}
-
-			bc = br.ReadBytes(4);
-
-			if (bc[0] == 0xFE && bc[1] == 0xFF && bc[2] == 0x00)
-			{
-				ec = Encoding.BigEndianUnicode;
-			}
-			else if (bc[0] == 0xFF && bc[1] == 0xFE && bc[2] == 0x41)
-			{
-				ec = Encoding.Unicode;
-			}
-			else
-			{
-				if (bc[0] == 0xEF && bc[1] == 0xBB && bc[2] == 0xBF)
-				{
-					ec = Encoding.UTF8;
-				}
-				else
-				{
-					int i;
-					Int32.TryParse(fs.Length.ToString(), out i);
-					bc = br.ReadBytes(i);
-					if (IsUTF8Bytes(bc))
-						ec = Encoding.UTF8;
-				}
-			}
-
-			br.Close();
+			if (IsUTF8Bytes(bc))
+				ec = Encoding.UTF8;
 
 			return ec;
 		}
@@ -68,10 +33,14 @@ namespace CConverter
 		{
 			int charByteCounter = 1;　 //计算当前正分析的字符应还有的字节数
 			byte curByte; //当前分析的字节.
+			bool bAllASCII = true;
 
 			for (int i = 0; i < data.Length; i++)
 			{
 				curByte = data[i];
+
+				if ((curByte & 0x80) != 0)
+					bAllASCII = false;
 
 				if (charByteCounter == 1)
 				{
@@ -83,7 +52,7 @@ namespace CConverter
 							charByteCounter++;
 						}
 						//标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X
-						if (charByteCounter == 1 || charByteCounter > 6)
+						if (charByteCounter == 1)
 						{
 							return false;
 						}
@@ -105,6 +74,9 @@ namespace CConverter
 			{
 				return false;
 			}
+
+			if (bAllASCII)
+				return false;
 
 			return true;
 		}

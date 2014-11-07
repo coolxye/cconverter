@@ -18,8 +18,6 @@ namespace CConverter
 			this.cbEncode.SelectedIndex = 1;
 		}
 
-		private String _sPathRoot = null;
-		private String _sDirName = null;
 		private List<String> _lsFiPath = new List<String>();
 
 		private void tsmiOFi_Click(object sender, EventArgs e)
@@ -31,10 +29,9 @@ namespace CConverter
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
-				_lsFiPath.Clear();
-				lbCC.Items.Clear();
 				_lsFiPath.AddRange(ofd.FileNames);
-				lbCC.Items.AddRange(ofd.SafeFileNames);
+				lbCC.Items.AddRange(ofd.FileNames);
+				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 
@@ -44,18 +41,16 @@ namespace CConverter
 
 			if (fdb.ShowDialog() == DialogResult.OK)
 			{
-				_lsFiPath.Clear();
-				lbCC.Items.Clear();
 				DirectoryInfo di = new DirectoryInfo(fdb.SelectedPath);
-				_sPathRoot = di.Parent.FullName;
-				_sDirName = di.Name;
-
 				foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
-					if (fi.Extension.Contains(".c") || fi.Extension.Contains(".h"))
+					if (fi.Extension == ".c" || fi.Extension == ".h" ||
+						fi.Extension == ".cpp" || fi.Extension == ".hpp")
 					{
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
 					}
+
+				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 
@@ -66,6 +61,10 @@ namespace CConverter
 
 			if (_lsFiPath.Count == 0)
 				return;
+
+			tspbCC.Maximum = _lsFiPath.Count;
+
+			tsslCC.Text = "The CodePage of files is Converting...";
 
 			if (cbEncode.SelectedIndex == 0)
 				ec = Encoding.Default;
@@ -92,8 +91,14 @@ namespace CConverter
 				sfile = sr.ReadToEnd();
 				sr.Close();
 
+				tspbCC.PerformStep();
+
 				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
 					continue;
+
+				FileAttributes fiatr = File.GetAttributes(s);
+				if ((fiatr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+					File.SetAttributes(s, FileAttributes.Normal);
 
 				if (ec == Encoding.UTF8)
 					ec = new UTF8Encoding(false);
@@ -110,12 +115,68 @@ namespace CConverter
 				sw.Close();
 			}
 
-			MessageBox.Show(this, "Convert OK", "OK", MessageBoxButtons.OK);
+			tsslCC.Text = "The Converting is Completed.";
+			//tsslCC.ScrollToCaret();
+			//MessageBox.Show(this, "Convert OK", "OK", MessageBoxButtons.OK);
 		}
 
-		private void btnExit_Click(object sender, EventArgs e)
+		private void btnClear_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			if (_lsFiPath.Count != 0)
+				_lsFiPath.Clear();
+
+			if (lbCC.Items.Count != 0)
+				lbCC.Items.Clear();
+
+			tsslCC.Text = "";
+			tspbCC.Value = 0;
+		}
+
+		private void lbCC_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.All;
+		}
+
+		private void lbCC_DragOver(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.All;
+		}
+
+		private void lbCC_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] sp = (String[])e.Data.GetData(DataFormats.FileDrop);
+
+			if (sp.Length == 0)
+				return;
+
+			foreach (string p in sp)
+			{
+				if (Directory.Exists(p))
+				{
+					DirectoryInfo di = new DirectoryInfo(p);
+
+					foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
+						if (fi.Extension == ".c" || fi.Extension == ".h" ||
+						fi.Extension == ".cpp" || fi.Extension == ".hpp")
+						{
+							_lsFiPath.Add(fi.FullName);
+							lbCC.Items.Add(fi.FullName);
+						}
+				}
+				else if (File.Exists(p))
+				{
+					FileInfo fi = new FileInfo(p);
+
+					if (fi.Extension == ".c" || fi.Extension == ".h" ||
+						fi.Extension == ".cpp" || fi.Extension == ".hpp")
+					{
+						_lsFiPath.Add(fi.FullName);
+						lbCC.Items.Add(fi.FullName);
+					}
+				}
+			}
+
+			tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 		}
 	}
 }
