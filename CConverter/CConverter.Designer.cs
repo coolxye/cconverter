@@ -72,21 +72,20 @@
 			// tsmiOFi
 			// 
 			this.tsmiOFi.Name = "tsmiOFi";
-			this.tsmiOFi.Size = new System.Drawing.Size(136, 22);
+			this.tsmiOFi.Size = new System.Drawing.Size(152, 22);
 			this.tsmiOFi.Text = "Open Files";
-			this.tsmiOFi.Click += new System.EventHandler(this.tsmiOFi_Click);
 			// 
 			// tsmiOFo
 			// 
 			this.tsmiOFo.Name = "tsmiOFo";
-			this.tsmiOFo.Size = new System.Drawing.Size(136, 22);
+			this.tsmiOFo.Size = new System.Drawing.Size(152, 22);
 			this.tsmiOFo.Text = "Open Folder";
-			this.tsmiOFo.Click += new System.EventHandler(this.tsmiOFo_Click);
 			// 
 			// gbFList
 			// 
-			this.gbFList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gbFList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.gbFList.Controls.Add(this.lbCC);
 			this.gbFList.Location = new System.Drawing.Point(12, 27);
 			this.gbFList.Name = "gbFList";
@@ -98,9 +97,9 @@
 			// lbCC
 			// 
 			this.lbCC.AllowDrop = true;
-			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lbCC.FormattingEnabled = true;
 			this.lbCC.HorizontalScrollbar = true;
 			this.lbCC.ItemHeight = 12;

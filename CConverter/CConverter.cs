@@ -17,6 +17,8 @@ namespace CConverter
 
 		private List<String> _lsFiPath = new List<String>();
 
+		#if DEBUG
+		#region action of menuStrip
 		private void tsmiOFi_Click(object sender, EventArgs e)
 		{
 			const string strFilter = "C/C++ Files (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp|Flash ActionScript Files(*.as)|*.as";
@@ -51,6 +53,8 @@ namespace CConverter
 				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
+		#endregion
+		#endif
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
