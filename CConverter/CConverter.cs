@@ -90,10 +90,11 @@ namespace CConverter
 				sfile = sr.ReadToEnd();
 				sr.Close();
 
-				tspbCC.PerformStep();
-
 				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
+				{
+					tspbCC.PerformStep();
 					continue;
+				}
 
 				FileAttributes fiatr = File.GetAttributes(s);
 				if ((fiatr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
@@ -112,6 +113,8 @@ namespace CConverter
 					sw.Write(sfile);
 
 				sw.Close();
+
+				tspbCC.PerformStep();
 			}
 
 			tsslCC.Text = "The Converting is Completed.";
