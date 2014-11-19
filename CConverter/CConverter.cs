@@ -30,7 +30,6 @@ namespace CConverter
 			{
 				_lsFiPath.AddRange(ofd.FileNames);
 				lbCC.Items.AddRange(ofd.FileNames);
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 
@@ -49,8 +48,6 @@ namespace CConverter
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
 					}
-
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 		#endregion
@@ -66,8 +63,6 @@ namespace CConverter
 
 			tspbCC.Value = 0;
 			tspbCC.Maximum = _lsFiPath.Count;
-
-			tsslCC.Text = "The CodePage of files is Converting...";
 
 			if (cbEncode.SelectedIndex == 0)
 				ec = Encoding.Default;
@@ -121,9 +116,8 @@ namespace CConverter
 				tspbCC.PerformStep();
 			}
 
-			tsslCC.Text = "The Converting is Completed.";
-			//tsslCC.ScrollToCaret();
-			//MessageBox.Show(this, "Convert OK", "OK", MessageBoxButtons.OK);
+			Prompt pt = new Prompt("The Converting is Completed.", "Success");
+			pt.ShowDialog(this);
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
@@ -134,7 +128,6 @@ namespace CConverter
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			tsslCC.Text = "";
 			tspbCC.Value = 0;
 		}
 
@@ -183,8 +176,6 @@ namespace CConverter
 					}
 				}
 			}
-
-			tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 		}
 	}
 }

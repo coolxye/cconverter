@@ -32,14 +32,13 @@
 			this.gbFList = new System.Windows.Forms.GroupBox();
 			this.lbCC = new System.Windows.Forms.ListBox();
 			this.gbOp = new System.Windows.Forms.GroupBox();
+			this.btnStart = new System.Windows.Forms.Button();
+			this.btnClear = new System.Windows.Forms.Button();
 			this.rbUnix = new System.Windows.Forms.RadioButton();
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
-			this.btnStart = new System.Windows.Forms.Button();
-			this.btnClear = new System.Windows.Forms.Button();
 			this.ssCC = new System.Windows.Forms.StatusStrip();
 			this.tspbCC = new System.Windows.Forms.ToolStripProgressBar();
-			this.tsslCC = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
 			this.ssCC.SuspendLayout();
@@ -91,6 +90,26 @@
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
 			// 
+			// btnStart
+			// 
+			this.btnStart.Location = new System.Drawing.Point(295, 17);
+			this.btnStart.Name = "btnStart";
+			this.btnStart.Size = new System.Drawing.Size(70, 23);
+			this.btnStart.TabIndex = 4;
+			this.btnStart.Text = "Start";
+			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+			// 
+			// btnClear
+			// 
+			this.btnClear.Location = new System.Drawing.Point(381, 17);
+			this.btnClear.Name = "btnClear";
+			this.btnClear.Size = new System.Drawing.Size(70, 23);
+			this.btnClear.TabIndex = 5;
+			this.btnClear.Text = "Clear";
+			this.btnClear.UseVisualStyleBackColor = true;
+			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+			// 
 			// rbUnix
 			// 
 			this.rbUnix.AutoSize = true;
@@ -125,31 +144,10 @@
 			this.cbEncode.Size = new System.Drawing.Size(121, 20);
 			this.cbEncode.TabIndex = 0;
 			// 
-			// btnStart
-			// 
-			this.btnStart.Location = new System.Drawing.Point(295, 17);
-			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(70, 23);
-			this.btnStart.TabIndex = 4;
-			this.btnStart.Text = "Start";
-			this.btnStart.UseVisualStyleBackColor = true;
-			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-			// 
-			// btnClear
-			// 
-			this.btnClear.Location = new System.Drawing.Point(381, 17);
-			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(70, 23);
-			this.btnClear.TabIndex = 5;
-			this.btnClear.Text = "Clear";
-			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-			// 
 			// ssCC
 			// 
 			this.ssCC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tspbCC,
-            this.tsslCC});
+            this.tspbCC});
 			this.ssCC.Location = new System.Drawing.Point(0, 304);
 			this.ssCC.Name = "ssCC";
 			this.ssCC.Size = new System.Drawing.Size(632, 22);
@@ -159,17 +157,9 @@
 			// tspbCC
 			// 
 			this.tspbCC.Name = "tspbCC";
-			this.tspbCC.Size = new System.Drawing.Size(400, 16);
+			this.tspbCC.Size = new System.Drawing.Size(480, 16);
 			this.tspbCC.Step = 1;
 			this.tspbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			// 
-			// tsslCC
-			// 
-			this.tsslCC.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-			this.tsslCC.Name = "tsslCC";
-			this.tsslCC.Size = new System.Drawing.Size(215, 17);
-			this.tsslCC.Spring = true;
-			this.tsslCC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// CConverter
 			// 
@@ -205,7 +195,6 @@
 		private System.Windows.Forms.Button btnClear;
 		private System.Windows.Forms.StatusStrip ssCC;
 		private System.Windows.Forms.ToolStripProgressBar tspbCC;
-		private System.Windows.Forms.ToolStripStatusLabel tsslCC;
 	}
 }
 
