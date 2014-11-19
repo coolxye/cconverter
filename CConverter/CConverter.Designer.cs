@@ -29,10 +29,6 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CConverter));
-			this.msCC = new System.Windows.Forms.MenuStrip();
-			this.tsmiFi = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiOFi = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiOFo = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbFList = new System.Windows.Forms.GroupBox();
 			this.lbCC = new System.Windows.Forms.ListBox();
 			this.gbOp = new System.Windows.Forms.GroupBox();
@@ -44,69 +40,36 @@
 			this.ssCC = new System.Windows.Forms.StatusStrip();
 			this.tspbCC = new System.Windows.Forms.ToolStripProgressBar();
 			this.tsslCC = new System.Windows.Forms.ToolStripStatusLabel();
-			this.msCC.SuspendLayout();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
 			this.ssCC.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// msCC
-			// 
-			this.msCC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiFi});
-			this.msCC.Location = new System.Drawing.Point(0, 0);
-			this.msCC.Name = "msCC";
-			this.msCC.Size = new System.Drawing.Size(634, 24);
-			this.msCC.TabIndex = 0;
-			this.msCC.Text = "menuStrip1";
-			// 
-			// tsmiFi
-			// 
-			this.tsmiFi.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiOFi,
-            this.tsmiOFo});
-			this.tsmiFi.Name = "tsmiFi";
-			this.tsmiFi.Size = new System.Drawing.Size(41, 20);
-			this.tsmiFi.Text = "File";
-			// 
-			// tsmiOFi
-			// 
-			this.tsmiOFi.Name = "tsmiOFi";
-			this.tsmiOFi.Size = new System.Drawing.Size(136, 22);
-			this.tsmiOFi.Text = "Open Files";
-			this.tsmiOFi.Click += new System.EventHandler(this.tsmiOFi_Click);
-			// 
-			// tsmiOFo
-			// 
-			this.tsmiOFo.Name = "tsmiOFo";
-			this.tsmiOFo.Size = new System.Drawing.Size(136, 22);
-			this.tsmiOFo.Text = "Open Folder";
-			this.tsmiOFo.Click += new System.EventHandler(this.tsmiOFo_Click);
-			// 
 			// gbFList
 			// 
-			this.gbFList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gbFList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.gbFList.Controls.Add(this.lbCC);
-			this.gbFList.Location = new System.Drawing.Point(12, 27);
+			this.gbFList.Location = new System.Drawing.Point(12, 12);
 			this.gbFList.Name = "gbFList";
-			this.gbFList.Size = new System.Drawing.Size(610, 214);
+			this.gbFList.Size = new System.Drawing.Size(608, 227);
 			this.gbFList.TabIndex = 2;
 			this.gbFList.TabStop = false;
-			this.gbFList.Text = "Source files";
+			this.gbFList.Text = "Text File(s)";
 			// 
 			// lbCC
 			// 
 			this.lbCC.AllowDrop = true;
-			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lbCC.FormattingEnabled = true;
 			this.lbCC.HorizontalScrollbar = true;
 			this.lbCC.ItemHeight = 12;
-			this.lbCC.Location = new System.Drawing.Point(7, 19);
+			this.lbCC.Location = new System.Drawing.Point(7, 20);
 			this.lbCC.Name = "lbCC";
-			this.lbCC.Size = new System.Drawing.Size(597, 184);
+			this.lbCC.Size = new System.Drawing.Size(595, 196);
 			this.lbCC.TabIndex = 0;
 			this.lbCC.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbCC_DragDrop);
 			this.lbCC.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbCC_DragEnter);
@@ -114,12 +77,16 @@
 			// 
 			// gbOp
 			// 
+			this.gbOp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.gbOp.Controls.Add(this.btnStart);
+			this.gbOp.Controls.Add(this.btnClear);
 			this.gbOp.Controls.Add(this.rbUnix);
 			this.gbOp.Controls.Add(this.rbWin);
 			this.gbOp.Controls.Add(this.cbEncode);
-			this.gbOp.Location = new System.Drawing.Point(12, 247);
+			this.gbOp.Location = new System.Drawing.Point(12, 245);
 			this.gbOp.Name = "gbOp";
-			this.gbOp.Size = new System.Drawing.Size(302, 50);
+			this.gbOp.Size = new System.Drawing.Size(608, 50);
 			this.gbOp.TabIndex = 3;
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
@@ -160,9 +127,9 @@
 			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(379, 263);
+			this.btnStart.Location = new System.Drawing.Point(295, 17);
 			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(75, 23);
+			this.btnStart.Size = new System.Drawing.Size(70, 23);
 			this.btnStart.TabIndex = 4;
 			this.btnStart.Text = "Start";
 			this.btnStart.UseVisualStyleBackColor = true;
@@ -170,9 +137,9 @@
 			// 
 			// btnClear
 			// 
-			this.btnClear.Location = new System.Drawing.Point(507, 263);
+			this.btnClear.Location = new System.Drawing.Point(381, 17);
 			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(75, 23);
+			this.btnClear.Size = new System.Drawing.Size(70, 23);
 			this.btnClear.TabIndex = 5;
 			this.btnClear.Text = "Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
@@ -183,9 +150,9 @@
 			this.ssCC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tspbCC,
             this.tsslCC});
-			this.ssCC.Location = new System.Drawing.Point(0, 306);
+			this.ssCC.Location = new System.Drawing.Point(0, 304);
 			this.ssCC.Name = "ssCC";
-			this.ssCC.Size = new System.Drawing.Size(634, 22);
+			this.ssCC.Size = new System.Drawing.Size(632, 22);
 			this.ssCC.TabIndex = 8;
 			this.ssCC.Text = "statusStrip1";
 			// 
@@ -200,7 +167,7 @@
 			// 
 			this.tsslCC.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
 			this.tsslCC.Name = "tsslCC";
-			this.tsslCC.Size = new System.Drawing.Size(217, 17);
+			this.tsslCC.Size = new System.Drawing.Size(215, 17);
 			this.tsslCC.Spring = true;
 			this.tsslCC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
@@ -208,20 +175,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(634, 328);
+			this.ClientSize = new System.Drawing.Size(632, 326);
 			this.Controls.Add(this.ssCC);
-			this.Controls.Add(this.btnClear);
-			this.Controls.Add(this.btnStart);
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
-			this.Controls.Add(this.msCC);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MainMenuStrip = this.msCC;
+			this.MinimumSize = new System.Drawing.Size(512, 288);
 			this.Name = "CConverter";
 			this.Text = "Converter for Character set";
-			this.msCC.ResumeLayout(false);
-			this.msCC.PerformLayout();
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
@@ -234,10 +195,6 @@
 
 		#endregion
 
-		private System.Windows.Forms.MenuStrip msCC;
-		private System.Windows.Forms.ToolStripMenuItem tsmiFi;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOFi;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOFo;
 		private System.Windows.Forms.GroupBox gbFList;
 		private System.Windows.Forms.ListBox lbCC;
 		private System.Windows.Forms.GroupBox gbOp;
