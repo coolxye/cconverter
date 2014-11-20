@@ -30,7 +30,6 @@ namespace CConverter
 			{
 				_lsFiPath.AddRange(ofd.FileNames);
 				lbCC.Items.AddRange(ofd.FileNames);
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 
@@ -49,8 +48,6 @@ namespace CConverter
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
 					}
-
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 		#endregion
@@ -66,10 +63,8 @@ namespace CConverter
 
 			this.btnStart.Enabled = false;
 			this.btnClear.Enabled = false;
-			tspbCC.Value = 0;
-			tspbCC.Maximum = _lsFiPath.Count;
-
-			tsslCC.Text = "The CodePage of files is Converting...";
+			pbCC.Value = 0;
+			pbCC.Maximum = _lsFiPath.Count;
 
 			if (cbEncode.SelectedIndex == 0)
 				ec = Encoding.Default;
@@ -98,7 +93,7 @@ namespace CConverter
 
 				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
 				{
-					tspbCC.PerformStep();
+					pbCC.PerformStep();
 					continue;
 				}
 
@@ -120,10 +115,8 @@ namespace CConverter
 
 				sw.Close();
 
-				tspbCC.PerformStep();
+				pbCC.PerformStep();
 			}
-
-			tsslCC.Text = "The Converting is Completed.";
 
 			this.btnStart.Enabled = true;
 			this.btnClear.Enabled = true;
@@ -137,8 +130,7 @@ namespace CConverter
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			tsslCC.Text = "";
-			tspbCC.Value = 0;
+			pbCC.Value = 0;
 		}
 
 		private void lbCC_DragEnter(object sender, DragEventArgs e)
@@ -186,8 +178,6 @@ namespace CConverter
 					}
 				}
 			}
-
-			tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 		}
 	}
 }
