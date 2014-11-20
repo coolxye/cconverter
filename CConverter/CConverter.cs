@@ -17,7 +17,7 @@ namespace CConverter
 
 		private List<String> _lsFiPath = new List<String>();
 
-		#if DEBUG
+#if DEBUG
 		#region action of menuStrip
 		private void tsmiOFi_Click(object sender, EventArgs e)
 		{
@@ -54,7 +54,7 @@ namespace CConverter
 			}
 		}
 		#endregion
-		#endif
+#endif
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
@@ -64,6 +64,8 @@ namespace CConverter
 			if (_lsFiPath.Count == 0)
 				return;
 
+			this.btnStart.Enabled = false;
+			this.btnClear.Enabled = false;
 			tspbCC.Value = 0;
 			tspbCC.Maximum = _lsFiPath.Count;
 
@@ -122,8 +124,9 @@ namespace CConverter
 			}
 
 			tsslCC.Text = "The Converting is Completed.";
-			//tsslCC.ScrollToCaret();
-			//MessageBox.Show(this, "Convert OK", "OK", MessageBoxButtons.OK);
+
+			this.btnStart.Enabled = true;
+			this.btnClear.Enabled = true;
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
