@@ -17,7 +17,7 @@ namespace CConverter
 
 		private List<String> _lsFiPath = new List<String>();
 
-		#if DEBUG
+#if DEBUG
 		#region action of menuStrip
 		private void tsmiOFi_Click(object sender, EventArgs e)
 		{
@@ -30,7 +30,6 @@ namespace CConverter
 			{
 				_lsFiPath.AddRange(ofd.FileNames);
 				lbCC.Items.AddRange(ofd.FileNames);
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 
@@ -49,12 +48,10 @@ namespace CConverter
 						_lsFiPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
 					}
-
-				tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 			}
 		}
 		#endregion
-		#endif
+#endif
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
@@ -64,10 +61,10 @@ namespace CConverter
 			if (_lsFiPath.Count == 0)
 				return;
 
-			tspbCC.Value = 0;
-			tspbCC.Maximum = _lsFiPath.Count;
-
-			tsslCC.Text = "The CodePage of files is Converting...";
+			this.btnStart.Enabled = false;
+			this.btnClear.Enabled = false;
+			pbCC.Value = 0;
+			pbCC.Maximum = _lsFiPath.Count;
 
 			if (cbEncode.SelectedIndex == 0)
 				ec = Encoding.Default;
@@ -96,7 +93,7 @@ namespace CConverter
 
 				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
 				{
-					tspbCC.PerformStep();
+					pbCC.PerformStep();
 					continue;
 				}
 
@@ -118,12 +115,11 @@ namespace CConverter
 
 				sw.Close();
 
-				tspbCC.PerformStep();
+				pbCC.PerformStep();
 			}
 
-			tsslCC.Text = "The Converting is Completed.";
-			//tsslCC.ScrollToCaret();
-			//MessageBox.Show(this, "Convert OK", "OK", MessageBoxButtons.OK);
+			this.btnStart.Enabled = true;
+			this.btnClear.Enabled = true;
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
@@ -134,8 +130,7 @@ namespace CConverter
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			tsslCC.Text = "";
-			tspbCC.Value = 0;
+			pbCC.Value = 0;
 		}
 
 		private void lbCC_DragEnter(object sender, DragEventArgs e)
@@ -183,8 +178,6 @@ namespace CConverter
 					}
 				}
 			}
-
-			tsslCC.Text = String.Format("{0} files were loaded.", _lsFiPath.Count);
 		}
 	}
 }
