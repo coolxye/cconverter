@@ -17,7 +17,7 @@ namespace CConverter
 
 		private List<String> _lsFiPath = new List<String>();
 
-		#if DEBUG
+#if DEBUG
 		#region action of menuStrip
 		private void tsmiOFi_Click(object sender, EventArgs e)
 		{
@@ -51,7 +51,7 @@ namespace CConverter
 			}
 		}
 		#endregion
-		#endif
+#endif
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
@@ -61,8 +61,10 @@ namespace CConverter
 			if (_lsFiPath.Count == 0)
 				return;
 
-			tspbCC.Value = 0;
-			tspbCC.Maximum = _lsFiPath.Count;
+			this.btnStart.Enabled = false;
+			this.btnClear.Enabled = false;
+			pbCC.Value = 0;
+			pbCC.Maximum = _lsFiPath.Count;
 
 			if (cbEncode.SelectedIndex == 0)
 				ec = Encoding.Default;
@@ -91,7 +93,7 @@ namespace CConverter
 
 				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
 				{
-					tspbCC.PerformStep();
+					pbCC.PerformStep();
 					continue;
 				}
 
@@ -113,11 +115,14 @@ namespace CConverter
 
 				sw.Close();
 
-				tspbCC.PerformStep();
+				pbCC.PerformStep();
 			}
 
 			Prompt pt = new Prompt("The Converting is Completed.", "Success");
 			pt.ShowDialog(this);
+
+			this.btnStart.Enabled = true;
+			this.btnClear.Enabled = true;
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
@@ -128,7 +133,7 @@ namespace CConverter
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			tspbCC.Value = 0;
+			pbCC.Value = 0;
 		}
 
 		private void lbCC_DragEnter(object sender, DragEventArgs e)

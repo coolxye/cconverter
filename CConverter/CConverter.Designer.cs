@@ -37,11 +37,9 @@
 			this.rbUnix = new System.Windows.Forms.RadioButton();
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
-			this.ssCC = new System.Windows.Forms.StatusStrip();
-			this.tspbCC = new System.Windows.Forms.ToolStripProgressBar();
+			this.pbCC = new System.Windows.Forms.ProgressBar();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
-			this.ssCC.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// gbFList
@@ -144,29 +142,22 @@
 			this.cbEncode.Size = new System.Drawing.Size(121, 20);
 			this.cbEncode.TabIndex = 0;
 			// 
-			// ssCC
+			// pbCC
 			// 
-			this.ssCC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tspbCC});
-			this.ssCC.Location = new System.Drawing.Point(0, 304);
-			this.ssCC.Name = "ssCC";
-			this.ssCC.Size = new System.Drawing.Size(632, 22);
-			this.ssCC.TabIndex = 8;
-			this.ssCC.Text = "statusStrip1";
-			// 
-			// tspbCC
-			// 
-			this.tspbCC.Name = "tspbCC";
-			this.tspbCC.Size = new System.Drawing.Size(480, 16);
-			this.tspbCC.Step = 1;
-			this.tspbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.pbCC.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.pbCC.Location = new System.Drawing.Point(0, 308);
+			this.pbCC.Name = "pbCC";
+			this.pbCC.Size = new System.Drawing.Size(632, 18);
+			this.pbCC.Step = 1;
+			this.pbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.pbCC.TabIndex = 4;
 			// 
 			// CConverter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 326);
-			this.Controls.Add(this.ssCC);
+			this.Controls.Add(this.pbCC);
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -176,10 +167,7 @@
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
-			this.ssCC.ResumeLayout(false);
-			this.ssCC.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -193,8 +181,7 @@
 		private System.Windows.Forms.RadioButton rbWin;
 		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.Button btnClear;
-		private System.Windows.Forms.StatusStrip ssCC;
-		private System.Windows.Forms.ToolStripProgressBar tspbCC;
+		private System.Windows.Forms.ProgressBar pbCC;
 	}
 }
 
