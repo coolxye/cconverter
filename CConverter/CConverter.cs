@@ -72,22 +72,25 @@ namespace CConverter
 			if (rbUnix.Checked)
 				bf = true;
 
+			Encoding ecCur;
+			StreamReader sr;
+			StreamWriter sw;
+			string sfile;
+			FileStream fs;
+
 			foreach (string s in _lsFiPath)
 			{
-				Encoding ecCur;
-				StreamReader sr;
-				StreamWriter sw;
-				string sfile;
-				FileStream fs = new FileStream(s, FileMode.Open, FileAccess.Read);
-
+				fs = new FileStream(s, FileMode.Open, FileAccess.Read);
 				ecCur = Code.GetEncoding(fs);
 				fs.Close();
 
-				if (ecCur == Encoding.UTF8)
-					sr = new StreamReader(s, Encoding.UTF8);
-				else
-					sr = new StreamReader(s, Encoding.Default);
+				if (ecCur != Encoding.UTF8 && ecCur != Encoding.Default)
+				{
+					pbCC.PerformStep();
+					continue;
+				}
 
+				sr = new StreamReader(s, ecCur);
 				sfile = sr.ReadToEnd();
 				sr.Close();
 
@@ -101,6 +104,7 @@ namespace CConverter
 				if ((fiatr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
 					File.SetAttributes(s, FileAttributes.Normal);
 
+				// Convert to UTF-8 without BOM
 				if (ec == Encoding.UTF8)
 					ec = new UTF8Encoding(false);
 
