@@ -58,15 +58,13 @@
 			// lbCC
 			// 
 			this.lbCC.AllowDrop = true;
-			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lbCC.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lbCC.FormattingEnabled = true;
 			this.lbCC.HorizontalScrollbar = true;
 			this.lbCC.ItemHeight = 12;
-			this.lbCC.Location = new System.Drawing.Point(7, 20);
+			this.lbCC.Location = new System.Drawing.Point(3, 17);
 			this.lbCC.Name = "lbCC";
-			this.lbCC.Size = new System.Drawing.Size(595, 196);
+			this.lbCC.Size = new System.Drawing.Size(602, 207);
 			this.lbCC.TabIndex = 0;
 			this.lbCC.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbCC_DragDrop);
 			this.lbCC.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbCC_DragEnter);
