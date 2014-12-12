@@ -17,7 +17,7 @@ namespace CConverter
 			/// with BOM
 			/// UTF-16 Big: byte[] { 0xFE, 0xFF }
 			/// UTF-16 Little: byte[] { 0xFF, 0xFE }
-			/// unsupport UTF-32 Big: byte[] { 0x00, 0x00, 0xFE, 0xFF }
+			/// UTF-32 Big: byte[] { 0x00, 0x00, 0xFE, 0xFF }
 			/// UTF-32 Little: byte[] { 0xFF, 0xFE, 0x00, 0x00 }
 			/// UTF8: byte[] { 0xEF, 0xBB, 0xBF }
 			/// without BOM
@@ -47,10 +47,8 @@ namespace CConverter
 				else if (bc[0] == 0xFF && bc[1] == 0xFE)
 					ec = Encoding.Unicode;
 				else
-				{
 					if (IsUTF8Code(bc))
 						ec = Encoding.UTF8;
-				}
 			}
 			else if (lf == 3)
 			{
@@ -65,10 +63,8 @@ namespace CConverter
 				else if (bc[0] == 0xEF && bc[1] == 0xBB && bc[2] == 0xBF)
 					ec = Encoding.UTF8;
 				else
-				{
 					if (IsUTF8Code(bc))
 						ec = Encoding.UTF8;
-				}
 			}
 			else if (lf > 3)
 			{
@@ -76,7 +72,9 @@ namespace CConverter
 				bc = new byte[4];
 				fs.Read(bc, 0, 4);
 
-				if (bc[0] == 0xFE && bc[1] == 0xFF)
+				if (bc[0] == 0x00 && bc[1] == 0x00 && bc[2] == 0xFE && bc[3] == 0xFF)
+					ec = new UTF32Encoding(true, true);
+				else if (bc[0] == 0xFE && bc[1] == 0xFF)
 					ec = Encoding.BigEndianUnicode;
 				else if (bc[0] == 0xFF && bc[1] == 0xFE)
 				{
@@ -104,7 +102,6 @@ namespace CConverter
 		{
 			int charByteCounter = 1;	//计算当前正分析的字符应还有的字节数
 			byte curByte;	//当前分析的字节
-			bool bAllASCII = true;
 
 			for (int i = 0; i < data.Length; i++)
 			{
@@ -113,7 +110,6 @@ namespace CConverter
 				{
 					if (curByte >= 0x80)
 					{
-						bAllASCII = false;
 						//判断当前
 						while (((curByte <<= 1) & 0x80) != 0)
 						{
@@ -141,9 +137,6 @@ namespace CConverter
 			{
 				throw new Exception("非预期的byte格式!");
 			}
-
-			if (bAllASCII)
-				return false;
 
 			return true;
 		}
