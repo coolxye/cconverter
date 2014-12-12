@@ -135,7 +135,8 @@
 			this.cbEncode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbEncode.FormattingEnabled = true;
 			this.cbEncode.Items.AddRange(new object[] {
-            "Shift-JIS",
+            "ANSI",
+            "UTF-8 w/o BOM",
             "UTF-8"});
 			this.cbEncode.Location = new System.Drawing.Point(7, 19);
 			this.cbEncode.Name = "cbEncode";

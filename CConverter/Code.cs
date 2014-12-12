@@ -4,8 +4,31 @@ using System.Text;
 
 namespace CConverter
 {
+	enum CustomEncoding
+	{ Default, UTF8, UTF8woBOM, UCS2, BigUCS2, UTF32, BigUTF32 }
+
+	enum EndOfLine
+	{ Windows, UNIX, MAC }
+
 	class Code
 	{
+		public String FullName
+		{ get; set; }
+
+		public CustomEncoding EncodeType
+		{ get; set; }
+
+		public EndOfLine EOLFormat
+		{ get; set; }
+
+		public String EncodeString
+		{
+			get
+			{
+				return GetEncodeString(this.EncodeType);
+			}
+		}
+
 		/// <summary>
 		/// Get the Encoding of a file
 		/// </summary>
@@ -96,6 +119,201 @@ namespace CConverter
 			}
 
 			return ec;
+		}
+
+		public static CustomEncoding GetCustomEncoding(FileStream fs)
+		{
+			byte[] bc;
+			CustomEncoding ec = CustomEncoding.Default;
+			long lf = fs.Length;
+
+			if (lf < 0 || lf > Int32.MaxValue)
+			{ }
+			else if (lf == 2)
+			{
+				// UTF-16 / UTF-8 without BOM / ANSI
+				bc = new byte[2];
+				fs.Read(bc, 0, 2);
+
+				if (bc[0] == 0xFE && bc[1] == 0xFF)
+					ec = CustomEncoding.BigUCS2;
+				else if (bc[0] == 0xFF && bc[1] == 0xFE)
+					ec = CustomEncoding.UCS2;
+				else
+					if (IsUTF8Code(bc))
+						ec = CustomEncoding.UTF8woBOM;
+			}
+			else if (lf == 3)
+			{
+				// UTF-16 / UTF-8 / ANSI
+				bc = new byte[3];
+				fs.Read(bc, 0, 3);
+
+				if (bc[0] == 0xFE && bc[1] == 0xFF)
+					ec = CustomEncoding.BigUCS2;
+				else if (bc[0] == 0xFF && bc[1] == 0xFE)
+					ec = CustomEncoding.UCS2;
+				else if (bc[0] == 0xEF && bc[1] == 0xBB && bc[2] == 0xBF)
+					ec = CustomEncoding.UTF8;
+				else
+					if (IsUTF8Code(bc))
+						ec = CustomEncoding.UTF8woBOM;
+			}
+			else if (lf > 3)
+			{
+				// UTF-32 / UTF-16 / UTF-8 / ANSI
+				bc = new byte[4];
+				fs.Read(bc, 0, 4);
+
+				if (bc[0] == 0x00 && bc[1] == 0x00 && bc[2] == 0xFE && bc[3] == 0xFF)
+					ec = CustomEncoding.BigUTF32;
+				else if (bc[0] == 0xFE && bc[1] == 0xFF)
+					ec = CustomEncoding.BigUCS2;
+				else if (bc[0] == 0xFF && bc[1] == 0xFE)
+				{
+					if (bc[2] == 0x00 && bc[3] == 0x00)
+						ec = CustomEncoding.UTF32;
+					else
+						ec = CustomEncoding.UCS2;
+				}
+				else if (bc[0] == 0xEF && bc[1] == 0xBB && bc[2] == 0xBF)
+					ec = CustomEncoding.UTF8;
+				else
+				{
+					fs.Seek(0, SeekOrigin.Begin);
+					bc = new byte[lf];
+					fs.Read(bc, 0, (int)lf);
+					if (IsUTF8Code(bc))
+						ec = CustomEncoding.UTF8woBOM;
+				}
+			}
+
+			return ec;
+		}
+
+		/// <summary>
+		/// Check the Txt-Type of a file
+		/// </summary>
+		/// <param name="fs">FileStream</param>
+		/// <returns>Boolean</returns>
+		public static Boolean IsTxtFile(FileStream fs)
+		{
+			byte[] bc;
+			bool bl = true;
+			long lf = fs.Length;
+
+			if (lf < 0 || lf > Int32.MaxValue)
+				bl = false;
+			else if (lf <= 3)
+			{
+				bc = new byte[lf];
+				fs.Read(bc, 0, (int)lf);
+
+				foreach (byte b in bc)
+					if (b == 0x00)
+					{
+						bl = false;
+						break;
+					}
+			}
+			else
+			{
+				// UTF-32
+				bc = new byte[4];
+				fs.Read(bc, 0, 4);
+
+				if ((bc[0] == 0x00 && bc[1] == 0x00 && bc[2] == 0xFE && bc[3] == 0xFF) ||
+					(bc[0] == 0xFF && bc[1] == 0xFE && bc[2] == 0x00 && bc[3] == 0x00))
+						bl = true;
+				else
+				{
+					fs.Seek(0, SeekOrigin.Begin);
+					bc = new byte[lf];
+					fs.Read(bc, 0, (int)lf);
+
+					foreach (byte b in bc)
+						if (b == 0x00)
+						{
+							bl = false;
+							break;
+						}
+				}
+			}
+
+			return bl;
+		}
+
+		public static String GetEncodeString(CustomEncoding ce)
+		{
+			String strEnc;
+
+			switch (ce)
+			{
+				case CustomEncoding.UTF8:
+					strEnc = "UTF-8";
+					break;
+
+				case CustomEncoding.UTF8woBOM:
+					strEnc = "UTF-8 w/o BOM";
+					break;
+
+				case CustomEncoding.UCS2:
+					strEnc = "Unicode(UTF-16)";
+					break;
+
+				case CustomEncoding.BigUCS2:
+					strEnc = "Unicode(UTF-16) Big Endian";
+					break;
+
+				case CustomEncoding.UTF32:
+					strEnc = "UTF-32 Little Endian";
+					break;
+
+				case CustomEncoding.BigUTF32:
+					strEnc = "UTF-32 Big Endian";
+					break;
+
+				case CustomEncoding.Default:
+				default:
+					strEnc = "ANSI";
+					break;
+			}
+
+			return strEnc;
+		}
+
+		public static EndOfLine GetEOL(FileStream fs)
+		{
+			if (fs == FileStream.Null || fs.Length == 0)
+				return EndOfLine.Windows;
+
+			EndOfLine eol = EndOfLine.Windows;
+			int iL = (int)fs.Length;
+			byte[] bt = new byte[iL + 1];
+
+			fs.Read(bt, 0, iL);
+			bt[iL] = 0x00;
+
+			for (int i = 0; i < iL; i++)
+			{
+				if (bt[i] == 0x0D)
+				{
+					if (bt[i + 1] == 0x0A)
+						eol = EndOfLine.Windows;
+					else
+						eol = EndOfLine.UNIX;
+
+					break;
+				}
+				else if (bt[i] == 0x0A)
+				{
+					eol = EndOfLine.MAC;
+
+					break;
+				}
+			}
+
+			return eol;
 		}
 
 		private static bool IsUTF8Code(byte[] data)
