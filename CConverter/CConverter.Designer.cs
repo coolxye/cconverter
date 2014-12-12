@@ -32,17 +32,14 @@
 			this.gbFList = new System.Windows.Forms.GroupBox();
 			this.lbCC = new System.Windows.Forms.ListBox();
 			this.gbOp = new System.Windows.Forms.GroupBox();
+			this.btnStart = new System.Windows.Forms.Button();
+			this.btnClear = new System.Windows.Forms.Button();
 			this.rbUnix = new System.Windows.Forms.RadioButton();
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
-			this.btnStart = new System.Windows.Forms.Button();
-			this.btnClear = new System.Windows.Forms.Button();
-			this.ssCC = new System.Windows.Forms.StatusStrip();
-			this.tspbCC = new System.Windows.Forms.ToolStripProgressBar();
-			this.tsslCC = new System.Windows.Forms.ToolStripStatusLabel();
+			this.pbCC = new System.Windows.Forms.ProgressBar();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
-			this.ssCC.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// gbFList
@@ -61,15 +58,13 @@
 			// lbCC
 			// 
 			this.lbCC.AllowDrop = true;
-			this.lbCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lbCC.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lbCC.FormattingEnabled = true;
 			this.lbCC.HorizontalScrollbar = true;
 			this.lbCC.ItemHeight = 12;
-			this.lbCC.Location = new System.Drawing.Point(7, 20);
+			this.lbCC.Location = new System.Drawing.Point(3, 17);
 			this.lbCC.Name = "lbCC";
-			this.lbCC.Size = new System.Drawing.Size(595, 196);
+			this.lbCC.Size = new System.Drawing.Size(602, 207);
 			this.lbCC.TabIndex = 0;
 			this.lbCC.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbCC_DragDrop);
 			this.lbCC.DragEnter += new System.Windows.Forms.DragEventHandler(this.lbCC_DragEnter);
@@ -90,6 +85,26 @@
 			this.gbOp.TabIndex = 3;
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
+			// 
+			// btnStart
+			// 
+			this.btnStart.Location = new System.Drawing.Point(295, 17);
+			this.btnStart.Name = "btnStart";
+			this.btnStart.Size = new System.Drawing.Size(70, 23);
+			this.btnStart.TabIndex = 4;
+			this.btnStart.Text = "Start";
+			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+			// 
+			// btnClear
+			// 
+			this.btnClear.Location = new System.Drawing.Point(381, 17);
+			this.btnClear.Name = "btnClear";
+			this.btnClear.Size = new System.Drawing.Size(70, 23);
+			this.btnClear.TabIndex = 5;
+			this.btnClear.Text = "Clear";
+			this.btnClear.UseVisualStyleBackColor = true;
+			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 
 			// rbUnix
 			// 
@@ -125,58 +140,22 @@
 			this.cbEncode.Size = new System.Drawing.Size(121, 20);
 			this.cbEncode.TabIndex = 0;
 			// 
-			// btnStart
+			// pbCC
 			// 
-			this.btnStart.Location = new System.Drawing.Point(295, 17);
-			this.btnStart.Name = "btnStart";
-			this.btnStart.Size = new System.Drawing.Size(70, 23);
-			this.btnStart.TabIndex = 4;
-			this.btnStart.Text = "Start";
-			this.btnStart.UseVisualStyleBackColor = true;
-			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-			// 
-			// btnClear
-			// 
-			this.btnClear.Location = new System.Drawing.Point(381, 17);
-			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(70, 23);
-			this.btnClear.TabIndex = 5;
-			this.btnClear.Text = "Clear";
-			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-			// 
-			// ssCC
-			// 
-			this.ssCC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tspbCC,
-            this.tsslCC});
-			this.ssCC.Location = new System.Drawing.Point(0, 304);
-			this.ssCC.Name = "ssCC";
-			this.ssCC.Size = new System.Drawing.Size(632, 22);
-			this.ssCC.TabIndex = 8;
-			this.ssCC.Text = "statusStrip1";
-			// 
-			// tspbCC
-			// 
-			this.tspbCC.Name = "tspbCC";
-			this.tspbCC.Size = new System.Drawing.Size(400, 16);
-			this.tspbCC.Step = 1;
-			this.tspbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			// 
-			// tsslCC
-			// 
-			this.tsslCC.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-			this.tsslCC.Name = "tsslCC";
-			this.tsslCC.Size = new System.Drawing.Size(215, 17);
-			this.tsslCC.Spring = true;
-			this.tsslCC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.pbCC.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.pbCC.Location = new System.Drawing.Point(0, 308);
+			this.pbCC.Name = "pbCC";
+			this.pbCC.Size = new System.Drawing.Size(632, 18);
+			this.pbCC.Step = 1;
+			this.pbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.pbCC.TabIndex = 4;
 			// 
 			// CConverter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 326);
-			this.Controls.Add(this.ssCC);
+			this.Controls.Add(this.pbCC);
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -186,10 +165,7 @@
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
-			this.ssCC.ResumeLayout(false);
-			this.ssCC.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -203,9 +179,7 @@
 		private System.Windows.Forms.RadioButton rbWin;
 		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.Button btnClear;
-		private System.Windows.Forms.StatusStrip ssCC;
-		private System.Windows.Forms.ToolStripProgressBar tspbCC;
-		private System.Windows.Forms.ToolStripStatusLabel tsslCC;
+		private System.Windows.Forms.ProgressBar pbCC;
 	}
 }
 
