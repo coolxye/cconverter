@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace CConverter
 {
@@ -315,6 +316,9 @@ namespace CConverter
 			if (sp.Length == 0)
 				return;
 
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+
 			foreach (string p in sp)
 			{
 				if (Directory.Exists(p))
@@ -357,6 +361,43 @@ namespace CConverter
 
 			foreach (Code cd in lstCode)
 				this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+		}
+
+		private delegate void IncreaseProg();
+		private IncreaseProg ipLoad;
+
+		private delegate void LoadProgress(int maxValue);
+		private delegate void RunProgress();
+
+		private RunProgress rpCode;
+
+		private void ShowProgress()
+		{
+			Progress pg = new Progress();
+			pg.InitProgBar(10000);
+			ipLoad = new IncreaseProg(pg.RunProgBar);
+			pg.ShowDialog(this);
+		}
+
+		private void DoThread()
+		{
+			//MethodInvoker mi = new MethodInvoker(this.ShowProgress);
+			//this.BeginInvoke(mi);
+
+			//Thread.Sleep(2000);
+
+			IncreaseProg xx = new IncreaseProg(this.ShowProgress);
+
+			this.BeginInvoke(xx);
+
+			while (ipLoad == null)
+			{
+				Thread.Sleep(100);
+			}
+
+			this.Invoke(ipLoad);
+
+			ipLoad = null;
 		}
 	}
 }

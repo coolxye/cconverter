@@ -38,6 +38,7 @@
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
 			this.pbCC = new System.Windows.Forms.ProgressBar();
+			this.rbMac = new System.Windows.Forms.RadioButton();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
 			this.SuspendLayout();
@@ -51,7 +52,7 @@
 			this.gbFList.Location = new System.Drawing.Point(12, 12);
 			this.gbFList.Name = "gbFList";
 			this.gbFList.Size = new System.Drawing.Size(608, 227);
-			this.gbFList.TabIndex = 2;
+			this.gbFList.TabIndex = 0;
 			this.gbFList.TabStop = false;
 			this.gbFList.Text = "Text File(s)";
 			// 
@@ -74,6 +75,7 @@
 			// 
 			this.gbOp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.gbOp.Controls.Add(this.rbMac);
 			this.gbOp.Controls.Add(this.btnStart);
 			this.gbOp.Controls.Add(this.btnClear);
 			this.gbOp.Controls.Add(this.rbUnix);
@@ -82,13 +84,13 @@
 			this.gbOp.Location = new System.Drawing.Point(12, 245);
 			this.gbOp.Name = "gbOp";
 			this.gbOp.Size = new System.Drawing.Size(608, 50);
-			this.gbOp.TabIndex = 3;
+			this.gbOp.TabIndex = 1;
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
 			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(295, 17);
+			this.btnStart.Location = new System.Drawing.Point(352, 17);
 			this.btnStart.Name = "btnStart";
 			this.btnStart.Size = new System.Drawing.Size(70, 23);
 			this.btnStart.TabIndex = 4;
@@ -98,7 +100,7 @@
 			// 
 			// btnClear
 			// 
-			this.btnClear.Location = new System.Drawing.Point(381, 17);
+			this.btnClear.Location = new System.Drawing.Point(438, 17);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(70, 23);
 			this.btnClear.TabIndex = 5;
@@ -113,7 +115,7 @@
 			this.rbUnix.Location = new System.Drawing.Point(230, 20);
 			this.rbUnix.Name = "rbUnix";
 			this.rbUnix.Size = new System.Drawing.Size(47, 16);
-			this.rbUnix.TabIndex = 4;
+			this.rbUnix.TabIndex = 2;
 			this.rbUnix.TabStop = true;
 			this.rbUnix.Text = "UNIX";
 			this.rbUnix.UseVisualStyleBackColor = true;
@@ -124,7 +126,7 @@
 			this.rbWin.Location = new System.Drawing.Point(155, 20);
 			this.rbWin.Name = "rbWin";
 			this.rbWin.Size = new System.Drawing.Size(65, 16);
-			this.rbWin.TabIndex = 3;
+			this.rbWin.TabIndex = 1;
 			this.rbWin.Text = "Windows";
 			this.rbWin.UseVisualStyleBackColor = true;
 			// 
@@ -149,7 +151,17 @@
 			this.pbCC.Size = new System.Drawing.Size(632, 18);
 			this.pbCC.Step = 1;
 			this.pbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			this.pbCC.TabIndex = 4;
+			this.pbCC.TabIndex = 2;
+			// 
+			// rbMac
+			// 
+			this.rbMac.AutoSize = true;
+			this.rbMac.Location = new System.Drawing.Point(283, 20);
+			this.rbMac.Name = "rbMac";
+			this.rbMac.Size = new System.Drawing.Size(41, 16);
+			this.rbMac.TabIndex = 3;
+			this.rbMac.Text = "MAC";
+			this.rbMac.UseVisualStyleBackColor = true;
 			// 
 			// CConverter
 			// 
@@ -160,7 +172,7 @@
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(512, 288);
+			this.MinimumSize = new System.Drawing.Size(640, 360);
 			this.Name = "CConverter";
 			this.Text = "Converter for Character set";
 			this.gbFList.ResumeLayout(false);
@@ -181,6 +193,7 @@
 		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.Button btnClear;
 		private System.Windows.Forms.ProgressBar pbCC;
+		private System.Windows.Forms.RadioButton rbMac;
 	}
 }
 
