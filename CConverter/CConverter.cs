@@ -16,7 +16,7 @@ namespace CConverter
 			this.cbEncode.SelectedIndex = 1;
 		}
 
-		private List<String> _lsFiPath = new List<String>();
+		private List<String> lstPath = new List<String>();
 
 		private List<Code> lstCode = new List<Code>();
 
@@ -31,7 +31,7 @@ namespace CConverter
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
-				_lsFiPath.AddRange(ofd.FileNames);
+				lstPath.AddRange(ofd.FileNames);
 				lbCC.Items.AddRange(ofd.FileNames);
 			}
 		}
@@ -48,7 +48,7 @@ namespace CConverter
 						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
 						fi.Extension == ".as")
 					{
-						_lsFiPath.Add(fi.FullName);
+						lstPath.Add(fi.FullName);
 						lbCC.Items.Add(fi.FullName);
 					}
 			}
@@ -268,17 +268,18 @@ namespace CConverter
 
 			this.btnStart.Enabled = true;
 			this.btnClear.Enabled = true;
+			this.tsStsLblEC.Text = "All files were converted.";
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
 		{
-			if (_lsFiPath.Count != 0)
-				_lsFiPath.Clear();
+			if (lstPath.Count != 0)
+				lstPath.Clear();
 
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			pbCC.Value = 0;
+			this.tsStsLblEC.Text = "Ready";
 		}
 
 		private void lbCC_DragEnter(object sender, DragEventArgs e)
@@ -309,15 +310,14 @@ namespace CConverter
 			fs.Close();
 		}
 
+		private Progress pgView;
+
 		private void lbCC_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] sp = (String[])e.Data.GetData(DataFormats.FileDrop);
 
 			if (sp.Length == 0)
 				return;
-
-			Thread trd = new Thread(new ThreadStart(this.DoThread));
-			trd.Start();
 
 			foreach (string p in sp)
 			{
@@ -338,7 +338,7 @@ namespace CConverter
 
 					foreach (FileInfo fi in di.GetFiles("*", SearchOption.AllDirectories))
 					{
-						ParseCode(fi.FullName);
+						lstPath.Add(fi.FullName);
 					}
 				}
 				else if (File.Exists(p))
@@ -355,28 +355,70 @@ namespace CConverter
 					//}
 					#endregion
 
-					ParseCode(p);
+					lstPath.Add(p);
 				}
 			}
 
-			foreach (Code cd in lstCode)
-				this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+			pgView = new Progress();
+			pgView.InitProgBar(lstPath.Count);
+
+			// Thread
+			dm = new DoMethod(this.ParseFile);
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+
+			pgView.ShowDialog(this);
+
+			//foreach (Code cd in lstCode)
+			//    this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
 		}
 
-		private delegate void IncreaseProg();
-		private IncreaseProg ipLoad;
+		private delegate void DoMethod();
+		private DoMethod dm;
 
-		private delegate void LoadProgress(int maxValue);
-		private delegate void RunProgress();
+		private void ParseFile()
+		{
+			foreach (string file in lstPath)
+			{
+				FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
 
-		private RunProgress rpCode;
+				if (Code.IsTxtFile(fs))
+				{
+					Code cd = new Code();
+					cd.FullName = file;
+					cd.EncodeType = Code.GetCustomEncoding(fs);
+					cd.EOLFormat = Code.GetEOL(fs);
+
+					lstCode.Add(cd);
+					this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+				}
+
+				fs.Close();
+
+				pgView.PerformProgBar();
+			}
+
+			pgView.Close();
+
+			pgView = null;
+
+			this.tsStsLblEC.Text = String.Format("{0} file(s) were loaded.", lstCode.Count);
+		}
+
+		//private delegate void IncreaseProg();
+		//private IncreaseProg ipLoad;
+
+		//private delegate void LoadProgress(int maxValue);
+		//private delegate void RunProgress();
+
+		//private RunProgress rpCode;
 
 		private void ShowProgress()
 		{
-			Progress pg = new Progress();
-			pg.InitProgBar(10000);
-			ipLoad = new IncreaseProg(pg.RunProgBar);
-			pg.ShowDialog(this);
+			//Progress pg = new Progress();
+			//pg.InitProgBar(10000);
+			//ipLoad = new IncreaseProg(pg.RunProgBar);
+			//pg.ShowDialog(this);
 		}
 
 		private void DoThread()
@@ -386,18 +428,20 @@ namespace CConverter
 
 			//Thread.Sleep(2000);
 
-			IncreaseProg xx = new IncreaseProg(this.ShowProgress);
+			//IncreaseProg xx = new IncreaseProg(this.ShowProgress);
 
-			this.BeginInvoke(xx);
+			//this.BeginInvoke(xx);
 
-			while (ipLoad == null)
-			{
-				Thread.Sleep(100);
-			}
+			//while (ipLoad == null)
+			//{
+			//    Thread.Sleep(100);
+			//}
 
-			this.Invoke(ipLoad);
+			//this.Invoke(ipLoad);
 
-			ipLoad = null;
+			//ipLoad = null;
+			this.tsStsLblEC.Text = "Loading...";
+			this.Invoke(dm);
 		}
 	}
 }

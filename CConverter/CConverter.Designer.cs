@@ -32,15 +32,17 @@
 			this.gbFList = new System.Windows.Forms.GroupBox();
 			this.lbCC = new System.Windows.Forms.ListBox();
 			this.gbOp = new System.Windows.Forms.GroupBox();
+			this.rbMac = new System.Windows.Forms.RadioButton();
 			this.btnStart = new System.Windows.Forms.Button();
 			this.btnClear = new System.Windows.Forms.Button();
 			this.rbUnix = new System.Windows.Forms.RadioButton();
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
-			this.pbCC = new System.Windows.Forms.ProgressBar();
-			this.rbMac = new System.Windows.Forms.RadioButton();
+			this.stsStripEC = new System.Windows.Forms.StatusStrip();
+			this.tsStsLblEC = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
+			this.stsStripEC.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// gbFList
@@ -87,6 +89,16 @@
 			this.gbOp.TabIndex = 1;
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
+			// 
+			// rbMac
+			// 
+			this.rbMac.AutoSize = true;
+			this.rbMac.Location = new System.Drawing.Point(283, 20);
+			this.rbMac.Name = "rbMac";
+			this.rbMac.Size = new System.Drawing.Size(41, 16);
+			this.rbMac.TabIndex = 3;
+			this.rbMac.Text = "MAC";
+			this.rbMac.UseVisualStyleBackColor = true;
 			// 
 			// btnStart
 			// 
@@ -143,32 +155,28 @@
 			this.cbEncode.Size = new System.Drawing.Size(121, 20);
 			this.cbEncode.TabIndex = 0;
 			// 
-			// pbCC
+			// stsStripEC
 			// 
-			this.pbCC.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.pbCC.Location = new System.Drawing.Point(0, 308);
-			this.pbCC.Name = "pbCC";
-			this.pbCC.Size = new System.Drawing.Size(632, 18);
-			this.pbCC.Step = 1;
-			this.pbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			this.pbCC.TabIndex = 2;
+			this.stsStripEC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsStsLblEC});
+			this.stsStripEC.Location = new System.Drawing.Point(0, 304);
+			this.stsStripEC.Name = "stsStripEC";
+			this.stsStripEC.Size = new System.Drawing.Size(632, 22);
+			this.stsStripEC.TabIndex = 2;
+			this.stsStripEC.Text = "statusStrip1";
 			// 
-			// rbMac
+			// tsStsLblEC
 			// 
-			this.rbMac.AutoSize = true;
-			this.rbMac.Location = new System.Drawing.Point(283, 20);
-			this.rbMac.Name = "rbMac";
-			this.rbMac.Size = new System.Drawing.Size(41, 16);
-			this.rbMac.TabIndex = 3;
-			this.rbMac.Text = "MAC";
-			this.rbMac.UseVisualStyleBackColor = true;
+			this.tsStsLblEC.Name = "tsStsLblEC";
+			this.tsStsLblEC.Size = new System.Drawing.Size(35, 17);
+			this.tsStsLblEC.Text = "Ready";
 			// 
 			// CConverter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 326);
-			this.Controls.Add(this.pbCC);
+			this.Controls.Add(this.stsStripEC);
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -178,7 +186,10 @@
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
+			this.stsStripEC.ResumeLayout(false);
+			this.stsStripEC.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -192,8 +203,9 @@
 		private System.Windows.Forms.RadioButton rbWin;
 		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.Button btnClear;
-		private System.Windows.Forms.ProgressBar pbCC;
 		private System.Windows.Forms.RadioButton rbMac;
+		private System.Windows.Forms.StatusStrip stsStripEC;
+		private System.Windows.Forms.ToolStripStatusLabel tsStsLblEC;
 	}
 }
 

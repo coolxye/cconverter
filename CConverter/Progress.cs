@@ -25,18 +25,9 @@ namespace CConverter
 			this.pgBarProcess.Maximum = maxValue;
 		}
 
-		public void RunProgBar()
+		public void PerformProgBar()
 		{
-			//this.pgBarProcess.PerformStep();
-			while (this.pgBarProcess.Value < this.pgBarProcess.Maximum)
-				this.pgBarProcess.Increment(1);
-
-			this.Close();
-		}
-
-		public void CloseProgress()
-		{
-			this.Close();
+			this.pgBarProcess.PerformStep();
 		}
 	}
 }
