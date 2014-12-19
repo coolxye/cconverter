@@ -127,6 +127,8 @@ namespace CConverter
 			CustomEncoding ec = CustomEncoding.Default;
 			long lf = fs.Length;
 
+			fs.Seek(0, SeekOrigin.Begin);
+
 			if (lf < 0 || lf > Int32.MaxValue)
 			{ }
 			else if (lf == 2)
@@ -201,6 +203,8 @@ namespace CConverter
 			byte[] bc;
 			bool bl = true;
 			long lf = fs.Length;
+
+			fs.Seek(0, SeekOrigin.Begin);
 
 			if (lf < 0 || lf > Int32.MaxValue)
 				bl = false;
@@ -291,6 +295,7 @@ namespace CConverter
 			int iL = (int)fs.Length;
 			byte[] bt = new byte[iL + 1];
 
+			fs.Seek(0, SeekOrigin.Begin);
 			fs.Read(bt, 0, iL);
 			bt[iL] = 0x00;
 
@@ -301,13 +306,13 @@ namespace CConverter
 					if (bt[i + 1] == 0x0A)
 						eol = EndOfLine.Windows;
 					else
-						eol = EndOfLine.UNIX;
+						eol = EndOfLine.MAC;
 
 					break;
 				}
 				else if (bt[i] == 0x0A)
 				{
-					eol = EndOfLine.MAC;
+					eol = EndOfLine.UNIX;
 
 					break;
 				}

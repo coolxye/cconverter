@@ -182,7 +182,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(640, 360);
 			this.Name = "CConverter";
-			this.Text = "Converter for Character set";
+			this.Text = "Encoding Converter";
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
