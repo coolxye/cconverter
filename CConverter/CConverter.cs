@@ -163,6 +163,9 @@ namespace CConverter
 			if (_lsFiPath.Count != 0)
 				_lsFiPath.Clear();
 
+			if (lstCode.Count != 0)
+				lstCode.Clear();
+
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
