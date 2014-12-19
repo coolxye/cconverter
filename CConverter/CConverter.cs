@@ -17,7 +17,6 @@ namespace CConverter
 		}
 
 		private List<String> lstPath = new List<String>();
-
 		private List<Code> lstCode = new List<Code>();
 
 		private Encoding CovertEncode(CustomEncoding ce)
@@ -64,6 +63,19 @@ namespace CConverter
 			if (lstCode.Count == 0)
 				return;
 
+			pgView = new Progress();
+			pgView.InitProgBar(lstCode.Count);
+
+			// Thread
+			dm = new DoMethod(this.ConvertFile);
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+
+			pgView.ShowDialog(this);
+		}
+
+		private void ConvertFile()
+		{
 			CustomEncoding ec = CustomEncoding.Default;
 			EndOfLine eol = EndOfLine.Windows;
 
@@ -98,7 +110,10 @@ namespace CConverter
 			foreach (Code cd in lstCode)
 			{
 				if (ec == cd.EncodeType && eol == cd.EOLFormat)
+				{
+					pgView.PerformProgBar();
 					continue;
+				}
 
 				StreamReader sr = new StreamReader(cd.FullName, CovertEncode(cd.EncodeType));
 				String sfile = sr.ReadToEnd();
@@ -144,6 +159,8 @@ namespace CConverter
 					sw.Write(sfile);
 
 				sw.Close();
+
+				pgView.PerformProgBar();
 			}
 
 			this.lbCC.BeginUpdate();
@@ -155,6 +172,7 @@ namespace CConverter
 
 			this.lbCC.EndUpdate();
 
+			pgView.Close();
 			this.btnStart.Enabled = true;
 			this.btnClear.Enabled = true;
 			this.tsStsLblEC.Text = "All files were converted.";
@@ -164,6 +182,9 @@ namespace CConverter
 		{
 			if (lstPath.Count != 0)
 				lstPath.Clear();
+
+			if (lstCode.Count != 0)
+				lstCode.Clear();
 
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
@@ -179,23 +200,6 @@ namespace CConverter
 		private void lbCC_DragOver(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.All;
-		}
-
-		private void ParseCode(string file)
-		{
-			FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
-
-			if (Code.IsTxtFile(fs))
-			{
-				Code cd = new Code();
-				cd.FullName = file;
-				cd.EncodeType = Code.GetCustomEncoding(fs);
-				cd.EOLFormat = Code.GetEOL(fs);
-
-				lstCode.Add(cd);
-			}
-
-			fs.Close();
 		}
 
 		private Progress pgView;
@@ -220,6 +224,9 @@ namespace CConverter
 					lstPath.Add(p);
 			}
 
+			if (lstPath.Count == 0)
+				return;
+
 			pgView = new Progress();
 			pgView.InitProgBar(lstPath.Count);
 
@@ -229,9 +236,6 @@ namespace CConverter
 			trd.Start();
 
 			pgView.ShowDialog(this);
-
-			//foreach (Code cd in lstCode)
-			//    this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
 		}
 
 		private delegate void DoMethod();
@@ -266,7 +270,7 @@ namespace CConverter
 
 		private void DoThread()
 		{
-			this.tsStsLblEC.Text = "Loading...";
+			this.tsStsLblEC.Text = "Processing...";
 			this.Invoke(dm);
 		}
 	}

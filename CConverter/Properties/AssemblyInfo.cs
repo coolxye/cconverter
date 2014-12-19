@@ -7,7 +7,7 @@ using System.Resources;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("CConverter")]
-[assembly: AssemblyDescription("Convert encoding of the text file(s) to ANSI or UTF8")]
+[assembly: AssemblyDescription("Convert encoding of the text file(s)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("InA")]
 [assembly: AssemblyProduct("CConverter")]
@@ -34,5 +34,5 @@ using System.Resources;
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.*")]
-[assembly: AssemblyFileVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("")]
