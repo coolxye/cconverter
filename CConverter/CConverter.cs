@@ -400,46 +400,11 @@ namespace CConverter
 
 			pgView.Close();
 
-			pgView = null;
-
 			this.tsStsLblEC.Text = String.Format("{0} file(s) were loaded.", lstCode.Count);
-		}
-
-		//private delegate void IncreaseProg();
-		//private IncreaseProg ipLoad;
-
-		//private delegate void LoadProgress(int maxValue);
-		//private delegate void RunProgress();
-
-		//private RunProgress rpCode;
-
-		private void ShowProgress()
-		{
-			//Progress pg = new Progress();
-			//pg.InitProgBar(10000);
-			//ipLoad = new IncreaseProg(pg.RunProgBar);
-			//pg.ShowDialog(this);
 		}
 
 		private void DoThread()
 		{
-			//MethodInvoker mi = new MethodInvoker(this.ShowProgress);
-			//this.BeginInvoke(mi);
-
-			//Thread.Sleep(2000);
-
-			//IncreaseProg xx = new IncreaseProg(this.ShowProgress);
-
-			//this.BeginInvoke(xx);
-
-			//while (ipLoad == null)
-			//{
-			//    Thread.Sleep(100);
-			//}
-
-			//this.Invoke(ipLoad);
-
-			//ipLoad = null;
 			this.tsStsLblEC.Text = "Loading...";
 			this.Invoke(dm);
 		}
