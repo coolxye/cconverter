@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace CConverter
 {
@@ -12,129 +13,170 @@ namespace CConverter
 		{
 			InitializeComponent();
 
-			this.cbEncode.SelectedIndex = 1;
+			this.cbEncode.DataSource = Enum.GetValues(typeof(CustomEncoding));
+			this.cbEncode.SelectedItem = CustomEncoding.UTF8woBOM;
+
+			this.rbUnix.Checked = true;
 		}
 
-		private List<String> _lsFiPath = new List<String>();
+		private List<String> lstPath = new List<String>();
+		private List<Code> lstCode = new List<Code>();
 
-#if DEBUG
-		#region action of menuStrip
-		private void tsmiOFi_Click(object sender, EventArgs e)
+		private Encoding CovertEncode(CustomEncoding ce)
 		{
-			const string strFilter = "C/C++ Files (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp|Flash ActionScript Files(*.as)|*.as";
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Filter = strFilter;
-			ofd.Multiselect = true;
+			Encoding ecd;
 
-			if (ofd.ShowDialog() == DialogResult.OK)
+			switch (ce)
 			{
-				_lsFiPath.AddRange(ofd.FileNames);
-				lbCC.Items.AddRange(ofd.FileNames);
-			}
-		}
+				case CustomEncoding.UTF8:
+					ecd = Encoding.UTF8;
+					break;
 
-		private void tsmiOFo_Click(object sender, EventArgs e)
-		{
-			FolderBrowserDialog fdb = new FolderBrowserDialog();
+				case CustomEncoding.UTF8woBOM:
+					ecd = new UTF8Encoding(false);
+					break;
 
-			if (fdb.ShowDialog() == DialogResult.OK)
-			{
-				DirectoryInfo di = new DirectoryInfo(fdb.SelectedPath);
-				foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
-					if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
-						fi.Extension == ".as")
-					{
-						_lsFiPath.Add(fi.FullName);
-						lbCC.Items.Add(fi.FullName);
-					}
+				case CustomEncoding.UCS2:
+					ecd = Encoding.Unicode;
+					break;
+
+				case CustomEncoding.BigUCS2:
+					ecd = Encoding.BigEndianUnicode;
+					break;
+
+				case CustomEncoding.UTF32:
+					ecd = Encoding.UTF32;
+					break;
+
+				case CustomEncoding.BigUTF32:
+					ecd = new UTF32Encoding(true, true);
+					break;
+
+				case CustomEncoding.ANSI:
+				default:
+					ecd = Encoding.Default;
+					break;
 			}
+
+			return ecd;
 		}
-		#endregion
-#endif
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
-			Encoding ec = Encoding.UTF8;
-			bool bf = false;
-
-			if (_lsFiPath.Count == 0)
+			if (lstCode.Count == 0)
 				return;
+
+			pgView = new Progress();
+			pgView.InitProgBar(lstCode.Count);
+
+			// Thread
+			dm = new DoMethod(this.ConvertFile);
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+
+			pgView.ShowDialog(this);
+		}
+
+		private void ConvertFile()
+		{
+			CustomEncoding ec;
+			EndOfLine eol;
 
 			this.btnStart.Enabled = false;
 			this.btnClear.Enabled = false;
-			pbCC.Value = 0;
-			pbCC.Maximum = _lsFiPath.Count;
 
-			if (cbEncode.SelectedIndex == 0)
-				ec = Encoding.Default;
+			ec = (CustomEncoding)this.cbEncode.SelectedItem;
 
-			if (rbUnix.Checked)
-				bf = true;
+			if (this.rbWin.Checked)
+				eol = EndOfLine.Windows;
+			else if (this.rbUnix.Checked)
+				eol = EndOfLine.UNIX;
+			else
+				eol = EndOfLine.MAC;
 
-			Encoding ecCur;
-			StreamReader sr;
-			StreamWriter sw;
-			string sfile;
-			FileStream fs;
-
-			foreach (string s in _lsFiPath)
+			foreach (Code cd in lstCode)
 			{
-				fs = new FileStream(s, FileMode.Open, FileAccess.Read);
-				ecCur = Code.GetEncoding(fs);
-				fs.Close();
-
-				if (ecCur != Encoding.UTF8 && ecCur != Encoding.Default)
+				if (ec == cd.EncodeType && eol == cd.EOLFormat)
 				{
-					pbCC.PerformStep();
+					pgView.PerformProgBar();
 					continue;
 				}
 
-				sr = new StreamReader(s, ecCur);
-				sfile = sr.ReadToEnd();
+				StreamReader sr = new StreamReader(cd.FullName, CovertEncode(cd.EncodeType));
+				String sfile = sr.ReadToEnd();
 				sr.Close();
 
-				if (ecCur == ec && bf == !sfile.Contains("\r\n"))
-				{
-					pbCC.PerformStep();
-					continue;
-				}
-
-				FileAttributes fiatr = File.GetAttributes(s);
+				FileAttributes fiatr = File.GetAttributes(cd.FullName);
 				if ((fiatr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-					File.SetAttributes(s, FileAttributes.Normal);
+					File.SetAttributes(cd.FullName, FileAttributes.Normal);
 
-				// Convert to UTF-8 without BOM
-				if (ec == Encoding.UTF8)
-					ec = new UTF8Encoding(false);
+				Encoding cov = CovertEncode(ec);
 
-				sw = new StreamWriter(s, false, ec);
+				StreamWriter sw = new StreamWriter(cd.FullName, false, cov);
 
-				if (bf && sfile.Contains("\r\n"))
-					sw.Write(sfile.Replace("\r\n", "\n"));
-				else if (!bf && !sfile.Contains("\r\n"))
-					sw.Write(sfile.Replace("\n", "\r\n"));
+				cd.EncodeType = ec;
+
+				if (eol != cd.EOLFormat)
+				{
+					if (cd.EOLFormat == EndOfLine.Windows)
+					{
+						if (eol == EndOfLine.UNIX)
+							sw.Write(sfile.Replace("\r\n", "\n"));
+						else
+							sw.Write(sfile.Replace("\r\n", "\r"));
+					}
+					else if (cd.EOLFormat == EndOfLine.UNIX)
+					{
+						if (eol == EndOfLine.Windows)
+							sw.Write(sfile.Replace("\n", "\r\n"));
+						else
+							sw.Write(sfile.Replace("\n", "\r"));
+					}
+					else
+					{
+						if (eol == EndOfLine.Windows)
+							sw.Write(sfile.Replace("\r", "\r\n"));
+						else
+							sw.Write(sfile.Replace("\r", "\n"));
+					}
+
+					cd.EOLFormat = eol;
+				}
 				else
 					sw.Write(sfile);
 
 				sw.Close();
 
-				pbCC.PerformStep();
+				pgView.PerformProgBar();
 			}
 
+			this.lbCC.BeginUpdate();
+
+			this.lbCC.Items.Clear();
+
+			foreach (Code cd in lstCode)
+				this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+
+			this.lbCC.EndUpdate();
+
+			pgView.Close();
 			this.btnStart.Enabled = true;
 			this.btnClear.Enabled = true;
+			this.tsStsLblEC.Text = "All files were converted.";
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
 		{
-			if (_lsFiPath.Count != 0)
-				_lsFiPath.Clear();
+			if (lstPath.Count != 0)
+				lstPath.Clear();
+
+			if (lstCode.Count != 0)
+				lstCode.Clear();
 
 			if (lbCC.Items.Count != 0)
 				lbCC.Items.Clear();
 
-			pbCC.Value = 0;
+			this.tsStsLblEC.Text = "Ready";
 		}
 
 		private void lbCC_DragEnter(object sender, DragEventArgs e)
@@ -146,6 +188,8 @@ namespace CConverter
 		{
 			e.Effect = DragDropEffects.All;
 		}
+
+		private Progress pgView;
 
 		private void lbCC_DragDrop(object sender, DragEventArgs e)
 		{
@@ -160,28 +204,61 @@ namespace CConverter
 				{
 					DirectoryInfo di = new DirectoryInfo(p);
 
-					foreach (FileInfo fi in di.GetFiles("*.*", SearchOption.AllDirectories))
-						if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
-						fi.Extension == ".as")
-						{
-							_lsFiPath.Add(fi.FullName);
-							lbCC.Items.Add(fi.FullName);
-						}
+					foreach (FileInfo fi in di.GetFiles("*", SearchOption.AllDirectories))
+						lstPath.Add(fi.FullName);
 				}
 				else if (File.Exists(p))
-				{
-					FileInfo fi = new FileInfo(p);
-
-					if (fi.Extension == ".c" || fi.Extension == ".h" ||
-						fi.Extension == ".cpp" || fi.Extension == ".hpp" ||
-						fi.Extension == ".as")
-					{
-						_lsFiPath.Add(fi.FullName);
-						lbCC.Items.Add(fi.FullName);
-					}
-				}
+					lstPath.Add(p);
 			}
+
+			if (lstPath.Count == 0)
+				return;
+
+			pgView = new Progress();
+			pgView.InitProgBar(lstPath.Count);
+
+			// Thread
+			dm = new DoMethod(this.ParseFile);
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+
+			pgView.ShowDialog(this);
+		}
+
+		private delegate void DoMethod();
+		private DoMethod dm;
+
+		private void ParseFile()
+		{
+			foreach (string file in lstPath)
+			{
+				FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+
+				if (Code.IsTxtFile(fs))
+				{
+					Code cd = new Code();
+					cd.FullName = file;
+					cd.EncodeType = Code.GetCustomEncoding(fs);
+					cd.EOLFormat = Code.GetEOL(fs);
+
+					lstCode.Add(cd);
+					this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+				}
+
+				fs.Close();
+
+				pgView.PerformProgBar();
+			}
+
+			pgView.Close();
+
+			this.tsStsLblEC.Text = String.Format("{0} file(s) were loaded.", lstCode.Count);
+		}
+
+		private void DoThread()
+		{
+			this.tsStsLblEC.Text = "Processing...";
+			this.Invoke(dm);
 		}
 	}
 }

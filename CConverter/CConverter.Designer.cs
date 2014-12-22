@@ -32,14 +32,17 @@
 			this.gbFList = new System.Windows.Forms.GroupBox();
 			this.lbCC = new System.Windows.Forms.ListBox();
 			this.gbOp = new System.Windows.Forms.GroupBox();
+			this.rbMac = new System.Windows.Forms.RadioButton();
 			this.btnStart = new System.Windows.Forms.Button();
 			this.btnClear = new System.Windows.Forms.Button();
 			this.rbUnix = new System.Windows.Forms.RadioButton();
 			this.rbWin = new System.Windows.Forms.RadioButton();
 			this.cbEncode = new System.Windows.Forms.ComboBox();
-			this.pbCC = new System.Windows.Forms.ProgressBar();
+			this.stsStripEC = new System.Windows.Forms.StatusStrip();
+			this.tsStsLblEC = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gbFList.SuspendLayout();
 			this.gbOp.SuspendLayout();
+			this.stsStripEC.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// gbFList
@@ -51,7 +54,7 @@
 			this.gbFList.Location = new System.Drawing.Point(12, 12);
 			this.gbFList.Name = "gbFList";
 			this.gbFList.Size = new System.Drawing.Size(608, 227);
-			this.gbFList.TabIndex = 2;
+			this.gbFList.TabIndex = 0;
 			this.gbFList.TabStop = false;
 			this.gbFList.Text = "Text File(s)";
 			// 
@@ -74,6 +77,7 @@
 			// 
 			this.gbOp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.gbOp.Controls.Add(this.rbMac);
 			this.gbOp.Controls.Add(this.btnStart);
 			this.gbOp.Controls.Add(this.btnClear);
 			this.gbOp.Controls.Add(this.rbUnix);
@@ -82,13 +86,23 @@
 			this.gbOp.Location = new System.Drawing.Point(12, 245);
 			this.gbOp.Name = "gbOp";
 			this.gbOp.Size = new System.Drawing.Size(608, 50);
-			this.gbOp.TabIndex = 3;
+			this.gbOp.TabIndex = 1;
 			this.gbOp.TabStop = false;
 			this.gbOp.Text = "Options";
 			// 
+			// rbMac
+			// 
+			this.rbMac.AutoSize = true;
+			this.rbMac.Location = new System.Drawing.Point(283, 20);
+			this.rbMac.Name = "rbMac";
+			this.rbMac.Size = new System.Drawing.Size(41, 16);
+			this.rbMac.TabIndex = 3;
+			this.rbMac.Text = "MAC";
+			this.rbMac.UseVisualStyleBackColor = true;
+			// 
 			// btnStart
 			// 
-			this.btnStart.Location = new System.Drawing.Point(295, 17);
+			this.btnStart.Location = new System.Drawing.Point(352, 17);
 			this.btnStart.Name = "btnStart";
 			this.btnStart.Size = new System.Drawing.Size(70, 23);
 			this.btnStart.TabIndex = 4;
@@ -98,7 +112,7 @@
 			// 
 			// btnClear
 			// 
-			this.btnClear.Location = new System.Drawing.Point(381, 17);
+			this.btnClear.Location = new System.Drawing.Point(438, 17);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(70, 23);
 			this.btnClear.TabIndex = 5;
@@ -109,12 +123,10 @@
 			// rbUnix
 			// 
 			this.rbUnix.AutoSize = true;
-			this.rbUnix.Checked = true;
 			this.rbUnix.Location = new System.Drawing.Point(230, 20);
 			this.rbUnix.Name = "rbUnix";
 			this.rbUnix.Size = new System.Drawing.Size(47, 16);
-			this.rbUnix.TabIndex = 4;
-			this.rbUnix.TabStop = true;
+			this.rbUnix.TabIndex = 2;
 			this.rbUnix.Text = "UNIX";
 			this.rbUnix.UseVisualStyleBackColor = true;
 			// 
@@ -124,7 +136,7 @@
 			this.rbWin.Location = new System.Drawing.Point(155, 20);
 			this.rbWin.Name = "rbWin";
 			this.rbWin.Size = new System.Drawing.Size(65, 16);
-			this.rbWin.TabIndex = 3;
+			this.rbWin.TabIndex = 1;
 			this.rbWin.Text = "Windows";
 			this.rbWin.UseVisualStyleBackColor = true;
 			// 
@@ -133,39 +145,48 @@
 			this.cbEncode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbEncode.FormattingEnabled = true;
 			this.cbEncode.Items.AddRange(new object[] {
-            "Shift-JIS",
+            "ANSI",
+            "UTF-8 w/o BOM",
             "UTF-8"});
 			this.cbEncode.Location = new System.Drawing.Point(7, 19);
 			this.cbEncode.Name = "cbEncode";
 			this.cbEncode.Size = new System.Drawing.Size(121, 20);
 			this.cbEncode.TabIndex = 0;
 			// 
-			// pbCC
+			// stsStripEC
 			// 
-			this.pbCC.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.pbCC.Location = new System.Drawing.Point(0, 308);
-			this.pbCC.Name = "pbCC";
-			this.pbCC.Size = new System.Drawing.Size(632, 18);
-			this.pbCC.Step = 1;
-			this.pbCC.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			this.pbCC.TabIndex = 4;
+			this.stsStripEC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsStsLblEC});
+			this.stsStripEC.Location = new System.Drawing.Point(0, 304);
+			this.stsStripEC.Name = "stsStripEC";
+			this.stsStripEC.Size = new System.Drawing.Size(632, 22);
+			this.stsStripEC.TabIndex = 2;
+			this.stsStripEC.Text = "statusStrip1";
+			// 
+			// tsStsLblEC
+			// 
+			this.tsStsLblEC.Name = "tsStsLblEC";
+			this.tsStsLblEC.Size = new System.Drawing.Size(35, 17);
+			this.tsStsLblEC.Text = "Ready";
 			// 
 			// CConverter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 326);
-			this.Controls.Add(this.pbCC);
+			this.Controls.Add(this.stsStripEC);
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(512, 288);
 			this.Name = "CConverter";
-			this.Text = "Converter for Character set";
+			this.Text = "Encoding Converter";
 			this.gbFList.ResumeLayout(false);
 			this.gbOp.ResumeLayout(false);
 			this.gbOp.PerformLayout();
+			this.stsStripEC.ResumeLayout(false);
+			this.stsStripEC.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -179,7 +200,9 @@
 		private System.Windows.Forms.RadioButton rbWin;
 		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.Button btnClear;
-		private System.Windows.Forms.ProgressBar pbCC;
+		private System.Windows.Forms.RadioButton rbMac;
+		private System.Windows.Forms.StatusStrip stsStripEC;
+		private System.Windows.Forms.ToolStripStatusLabel tsStsLblEC;
 	}
 }
 
