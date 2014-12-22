@@ -198,6 +198,9 @@ namespace CConverter
 			if (sp.Length == 0)
 				return;
 
+			if (lstPath.Count != 0)
+				lstPath.Clear();
+
 			foreach (string p in sp)
 			{
 				if (Directory.Exists(p))
