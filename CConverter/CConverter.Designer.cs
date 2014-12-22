@@ -123,12 +123,10 @@
 			// rbUnix
 			// 
 			this.rbUnix.AutoSize = true;
-			this.rbUnix.Checked = true;
 			this.rbUnix.Location = new System.Drawing.Point(230, 20);
 			this.rbUnix.Name = "rbUnix";
 			this.rbUnix.Size = new System.Drawing.Size(47, 16);
 			this.rbUnix.TabIndex = 2;
-			this.rbUnix.TabStop = true;
 			this.rbUnix.Text = "UNIX";
 			this.rbUnix.UseVisualStyleBackColor = true;
 			// 
@@ -180,7 +178,6 @@
 			this.Controls.Add(this.gbOp);
 			this.Controls.Add(this.gbFList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(640, 360);
 			this.Name = "CConverter";
 			this.Text = "Encoding Converter";
 			this.gbFList.ResumeLayout(false);
