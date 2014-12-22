@@ -111,12 +111,10 @@
 			// rbUnix
 			// 
 			this.rbUnix.AutoSize = true;
-			this.rbUnix.Checked = true;
 			this.rbUnix.Location = new System.Drawing.Point(230, 20);
 			this.rbUnix.Name = "rbUnix";
 			this.rbUnix.Size = new System.Drawing.Size(47, 16);
 			this.rbUnix.TabIndex = 4;
-			this.rbUnix.TabStop = true;
 			this.rbUnix.Text = "UNIX";
 			this.rbUnix.UseVisualStyleBackColor = true;
 			// 

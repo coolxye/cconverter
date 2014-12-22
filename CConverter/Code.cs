@@ -5,7 +5,7 @@ using System.Text;
 namespace CConverter
 {
 	enum CustomEncoding
-	{ Default, UTF8, UTF8woBOM, UCS2, BigUCS2, UTF32, BigUTF32 }
+	{ ANSI, UTF8, UTF8woBOM, UCS2, BigUCS2, UTF32, BigUTF32 }
 
 	enum EndOfLine
 	{ Windows, UNIX, MAC }
@@ -124,7 +124,7 @@ namespace CConverter
 		public static CustomEncoding GetCustomEncoding(FileStream fs)
 		{
 			byte[] bc;
-			CustomEncoding ec = CustomEncoding.Default;
+			CustomEncoding ec = CustomEncoding.ANSI;
 			long lf = fs.Length;
 
 			fs.Seek(0, SeekOrigin.Begin);
@@ -277,7 +277,7 @@ namespace CConverter
 					strEnc = "UTF-32 Big Endian";
 					break;
 
-				case CustomEncoding.Default:
+				case CustomEncoding.ANSI:
 				default:
 					strEnc = "ANSI";
 					break;

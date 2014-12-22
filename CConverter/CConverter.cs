@@ -12,7 +12,10 @@ namespace CConverter
 		{
 			InitializeComponent();
 
-			this.cbEncode.SelectedIndex = 1;
+			this.cbEncode.DataSource = Enum.GetValues(typeof(CustomEncoding));
+			this.cbEncode.SelectedItem = CustomEncoding.UTF8woBOM;
+
+			this.rbUnix.Checked = true;
 		}
 
 		private List<String> _lsFiPath = new List<String>();
@@ -49,7 +52,7 @@ namespace CConverter
 					ecd = new UTF32Encoding(true, true);
 					break;
 
-				case CustomEncoding.Default:
+				case CustomEncoding.ANSI:
 				default:
 					ecd = Encoding.Default;
 					break;
@@ -63,29 +66,13 @@ namespace CConverter
 			if (lstCode.Count == 0)
 				return;
 
-			CustomEncoding ec = CustomEncoding.Default;
-			EndOfLine eol = EndOfLine.Windows;
+			CustomEncoding ec;
+			EndOfLine eol;
 
 			this.btnStart.Enabled = false;
 			this.btnClear.Enabled = false;
 
-			switch (this.cbEncode.SelectedIndex)
-			{
-				case 0:
-					ec = CustomEncoding.Default;
-					break;
-
-				case 1:
-					ec = CustomEncoding.UTF8woBOM;
-					break;
-
-				case 2:
-					ec = CustomEncoding.UTF8;
-					break;
-
-				default:
-					break;
-			}
+			ec = (CustomEncoding)this.cbEncode.SelectedItem;
 
 			if (this.rbWin.Checked)
 				eol = EndOfLine.Windows;
