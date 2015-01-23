@@ -8,11 +8,14 @@ namespace CConverter
 	{ ANSI, UTF8, UTF8woBOM, UCS2, BigUCS2, UTF32, BigUTF32 }
 
 	enum EndOfLine
-	{ Windows, UNIX, MAC }
+	{ Windows, UNIX, MAC, Mix }
 
 	class Code
 	{
 		public String FullName
+		{ get; set; }
+
+		public String Extension
 		{ get; set; }
 
 		public CustomEncoding EncodeType
@@ -194,7 +197,7 @@ namespace CConverter
 		}
 
 		/// <summary>
-		/// Check the Txt-Type of a file
+		/// Check the Txt-Type of a file (Bug)
 		/// </summary>
 		/// <param name="fs">FileStream</param>
 		/// <returns>Boolean</returns>
@@ -245,6 +248,35 @@ namespace CConverter
 			}
 
 			return bl;
+		}
+
+		//public static const List<String> FileExt = new List<string>(
+		//    new String[] {
+		//        "txt", "as", "mx", "mxml", "c", "cpp", "cxx",
+		//        "h", "hpp", "hxx", "cc", "cs", "java", "js",
+		//        "jsp", "rc", "vb", "vbs", "xml", "xsml",
+		//        "xsl", "xsd", "kml"
+		//    }
+		//);
+
+		private static String[] FileExt = {
+			".txt",
+			".as", ".mx", ".mxml",
+			".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".cc",
+			".cs", ".sln", ".csproj", ".resx",
+			".java", ".js", ".jsp",
+			".rc",
+			".vb", ".vbs",
+			".xml", ".xsml", ".xsl", ".xsd", ".kml"
+		};
+
+		public static Boolean IsCnvFile(String ext)
+		{
+			foreach (string str in FileExt)
+				if (ext.Equals(str))
+					return true;
+
+			return false;
 		}
 
 		public static String GetEncodeString(CustomEncoding ce)
@@ -316,6 +348,67 @@ namespace CConverter
 
 					break;
 				}
+			}
+
+			return eol;
+		}
+
+		public static EndOfLine GetEOL(CustomEncoding ce, FileStream fs)
+		{
+			if (fs == FileStream.Null || fs.Length == 0)
+			{
+				return EndOfLine.Windows;
+			}
+
+			EndOfLine eol = EndOfLine.Windows;
+			int iL = (int)fs.Length;
+			byte[] bt = new byte[iL + 1];
+			byte beol = 0x00;
+
+			fs.Seek(0, SeekOrigin.Begin);
+			fs.Read(bt, 0, iL);
+			bt[iL] = 0x00;
+
+			switch (ce)
+			{
+				case CustomEncoding.ANSI:
+				case CustomEncoding.UTF8:
+				case CustomEncoding.UTF8woBOM:
+					for (int i = 0; i < iL; i++)
+					{
+						if (bt[i] == 0x0D && bt[i + 1] == 0x0A)
+						{
+							beol |= 0x01;
+							i++;
+						}
+						else if (bt[i] == 0x0D)
+							beol |= 0x02;
+						else if (bt[i] == 0x0A)
+							beol |= 0x04;
+					}
+
+					if (beol == 0x01)
+						eol = EndOfLine.Windows;
+					else if (beol == 0x02)
+						eol = EndOfLine.MAC;
+					else if (beol == 0x04)
+						eol = EndOfLine.UNIX;
+					else
+						eol = EndOfLine.Mix;
+
+					break;
+
+				case CustomEncoding.BigUCS2:
+					break;
+				case CustomEncoding.BigUTF32:
+					break;
+				case CustomEncoding.UCS2:
+					break;
+				case CustomEncoding.UTF32:
+					break;
+
+				default:
+					break;
 			}
 
 			return eol;
