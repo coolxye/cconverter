@@ -247,19 +247,26 @@ namespace CConverter
 			if (lstPreCode.Count == 0)
 				return;
 
+			// Thread
+			dm = new DoMethod(this.ShowProgress);
+			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			trd.Start();
+		}
+
+		private delegate void DoMethod();
+		private DoMethod dm;
+
+		private void ShowProgress()
+		{
 			pgView = new Progress();
 			pgView.InitProgBar(lstPreCode.Count);
 
-			// Thread
 			dm = new DoMethod(this.ParseFile);
 			Thread trd = new Thread(new ThreadStart(this.DoThread));
 			trd.Start();
 
 			pgView.ShowDialog(this);
 		}
-
-		private delegate void DoMethod();
-		private DoMethod dm;
 
 		private void ParseFile()
 		{
