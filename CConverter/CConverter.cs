@@ -19,7 +19,7 @@ namespace CConverter
 			this.rbUnix.Checked = true;
 		}
 
-		private List<String> lstPath = new List<String>();
+		private List<Code> lstPreCode = new List<Code>();
 		private List<Code> lstCode = new List<Code>();
 
 		private Encoding CovertEncode(CustomEncoding ce)
@@ -103,7 +103,7 @@ namespace CConverter
 				}
 
 				StreamReader sr = new StreamReader(cd.FullName, CovertEncode(cd.EncodeType));
-				String sfile = sr.ReadToEnd();
+				StringBuilder sb = new StringBuilder(sr.ReadToEnd());
 				sr.Close();
 
 				FileAttributes fiatr = File.GetAttributes(cd.FullName);
@@ -121,29 +121,48 @@ namespace CConverter
 					if (cd.EOLFormat == EndOfLine.Windows)
 					{
 						if (eol == EndOfLine.UNIX)
-							sw.Write(sfile.Replace("\r\n", "\n"));
+							sb.Replace("\r\n", "\n");
 						else
-							sw.Write(sfile.Replace("\r\n", "\r"));
+							sb.Replace("\r\n", "\r");
 					}
 					else if (cd.EOLFormat == EndOfLine.UNIX)
 					{
 						if (eol == EndOfLine.Windows)
-							sw.Write(sfile.Replace("\n", "\r\n"));
+							sb.Replace("\n", "\r\n");
 						else
-							sw.Write(sfile.Replace("\n", "\r"));
+							sb.Replace("\n", "\r");
+					}
+					else if (cd.EOLFormat == EndOfLine.MAC)
+					{
+						if (eol == EndOfLine.Windows)
+							sb.Replace("\r", "\r\n");
+						else
+							sb.Replace("\r", "\n");
 					}
 					else
 					{
 						if (eol == EndOfLine.Windows)
-							sw.Write(sfile.Replace("\r", "\r\n"));
+						{
+							sb.Replace("\r\n", "\n");
+							sb.Replace("\r", "\n");
+							sb.Replace("\n", "\r\n");
+						}
+						else if (eol == EndOfLine.UNIX)
+						{
+							sb.Replace("\r\n", "\n");
+							sb.Replace("\r", "\n");
+						}
 						else
-							sw.Write(sfile.Replace("\r", "\n"));
+						{
+							sb.Replace("\r\n", "\r");
+							sb.Replace("\n", "\r");
+						}
 					}
 
 					cd.EOLFormat = eol;
 				}
-				else
-					sw.Write(sfile);
+
+				sw.Write(sb.ToString());
 
 				sw.Close();
 
@@ -167,8 +186,8 @@ namespace CConverter
 
 		private void btnClear_Click(object sender, EventArgs e)
 		{
-			if (lstPath.Count != 0)
-				lstPath.Clear();
+			if (lstPreCode.Count != 0)
+				lstPreCode.Clear();
 
 			if (lstCode.Count != 0)
 				lstCode.Clear();
@@ -198,8 +217,8 @@ namespace CConverter
 			if (sp.Length == 0)
 				return;
 
-			if (lstPath.Count != 0)
-				lstPath.Clear();
+			if (lstPreCode.Count != 0)
+				lstPreCode.Clear();
 
 			foreach (string p in sp)
 			{
@@ -208,17 +227,28 @@ namespace CConverter
 					DirectoryInfo di = new DirectoryInfo(p);
 
 					foreach (FileInfo fi in di.GetFiles("*", SearchOption.AllDirectories))
-						lstPath.Add(fi.FullName);
+					{
+						Code pre = new Code();
+						pre.FullName = fi.FullName;
+						pre.Extension = fi.Extension;
+						lstPreCode.Add(pre);
+					}
 				}
 				else if (File.Exists(p))
-					lstPath.Add(p);
+				{
+					FileInfo fi = new FileInfo(p);
+					Code pre = new Code();
+					pre.FullName = fi.FullName;
+					pre.Extension = fi.Extension;
+					lstPreCode.Add(pre);
+				}
 			}
 
-			if (lstPath.Count == 0)
+			if (lstPreCode.Count == 0)
 				return;
 
 			pgView = new Progress();
-			pgView.InitProgBar(lstPath.Count);
+			pgView.InitProgBar(lstPreCode.Count);
 
 			// Thread
 			dm = new DoMethod(this.ParseFile);
@@ -233,22 +263,20 @@ namespace CConverter
 
 		private void ParseFile()
 		{
-			foreach (string file in lstPath)
+			foreach (Code cd in lstPreCode)
 			{
-				FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
-
-				if (Code.IsTxtFile(fs))
+				if (Code.IsCnvFile(cd.Extension))
 				{
-					Code cd = new Code();
-					cd.FullName = file;
+					FileStream fs = new FileStream(cd.FullName, FileMode.Open, FileAccess.Read);
+
 					cd.EncodeType = Code.GetCustomEncoding(fs);
-					cd.EOLFormat = Code.GetEOL(fs);
+					cd.EOLFormat = Code.GetEOL(cd.EncodeType, fs);
 
 					lstCode.Add(cd);
 					this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
-				}
 
-				fs.Close();
+					fs.Close();
+				}
 
 				pgView.PerformProgBar();
 			}
