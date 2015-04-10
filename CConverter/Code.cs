@@ -361,19 +361,21 @@ namespace CConverter
 			}
 
 			EndOfLine eol = EndOfLine.Windows;
-			int iL = (int)fs.Length;
-			byte[] bt = new byte[iL + 1];
 			byte beol = 0x00;
+			int iL = (int)fs.Length;
+			byte[] bt;
 
 			fs.Seek(0, SeekOrigin.Begin);
-			fs.Read(bt, 0, iL);
-			bt[iL] = 0x00;
 
 			switch (ce)
 			{
 				case CustomEncoding.ANSI:
 				case CustomEncoding.UTF8:
 				case CustomEncoding.UTF8woBOM:
+					bt = new byte[iL + 1];
+					fs.Read(bt, 0, iL);
+					bt[iL] = 0x00;
+
 					for (int i = 0; i < iL; i++)
 					{
 						if (bt[i] == 0x0D && bt[i + 1] == 0x0A)
@@ -386,30 +388,104 @@ namespace CConverter
 						else if (bt[i] == 0x0A)
 							beol |= 0x04;
 					}
-
-					if (beol == 0x01)
-						eol = EndOfLine.Windows;
-					else if (beol == 0x02)
-						eol = EndOfLine.MAC;
-					else if (beol == 0x04)
-						eol = EndOfLine.UNIX;
-					else
-						eol = EndOfLine.Mix;
-
 					break;
 
 				case CustomEncoding.BigUCS2:
+					bt = new byte[iL + 2];
+					fs.Read(bt, 0, iL);
+					bt[iL] = 0x00;
+					bt[iL + 1] = 0x00;
+
+					for (int i = 1; i < iL; i += 2)
+					{
+						if (bt[i] == 0x0D && bt[i + 2] == 0x0A)
+						{
+							beol |= 0x01;
+							i += 2;
+						}
+						else if (bt[i] == 0x0D)
+							beol |= 0x02;
+						else if (bt[i] == 0x0A)
+							beol |= 0x04;
+					}
 					break;
+
 				case CustomEncoding.BigUTF32:
+					bt = new byte[iL + 4];
+					fs.Read(bt, 0, iL);
+					bt[iL] = 0x00;
+					bt[iL + 1] = 0x00;
+					bt[iL + 2] = 0x00;
+					bt[iL + 3] = 0x00;
+
+					for (int i = 3; i < iL; i += 4)
+					{
+						if (bt[i] == 0x0D && bt[i + 4] == 0x0A)
+						{
+							beol |= 0x01;
+							i += 4;
+						}
+						else if (bt[i] == 0x0D)
+							beol |= 0x02;
+						else if (bt[i] == 0x0A)
+							beol |= 0x04;
+					}
 					break;
+
 				case CustomEncoding.UCS2:
+					bt = new byte[iL + 2];
+					fs.Read(bt, 0, iL);
+					bt[iL] = 0x00;
+					bt[iL + 1] = 0x00;
+
+					for (int i = 0; i < iL; i += 2)
+					{
+						if (bt[i] == 0x0D && bt[i + 2] == 0x0A)
+						{
+							beol |= 0x01;
+							i += 2;
+						}
+						else if (bt[i] == 0x0D)
+							beol |= 0x02;
+						else if (bt[i] == 0x0A)
+							beol |= 0x04;
+					}
 					break;
+
 				case CustomEncoding.UTF32:
+					bt = new byte[iL + 4];
+					fs.Read(bt, 0, iL);
+					bt[iL] = 0x00;
+					bt[iL + 1] = 0x00;
+					bt[iL + 2] = 0x00;
+					bt[iL + 3] = 0x00;
+
+					for (int i = 0; i < iL; i += 4)
+					{
+						if (bt[i] == 0x0D && bt[i + 4] == 0x0A)
+						{
+							beol |= 0x01;
+							i += 4;
+						}
+						else if (bt[i] == 0x0D)
+							beol |= 0x02;
+						else if (bt[i] == 0x0A)
+							beol |= 0x04;
+					}
 					break;
 
 				default:
 					break;
 			}
+
+			if (beol == 0x01)
+				eol = EndOfLine.Windows;
+			else if (beol == 0x02)
+				eol = EndOfLine.MAC;
+			else if (beol == 0x04)
+				eol = EndOfLine.UNIX;
+			else
+				eol = EndOfLine.Mix;
 
 			return eol;
 		}
