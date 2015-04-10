@@ -18,6 +18,17 @@ namespace CConverter
 			this.MinimumSize = this.Size;
 		}
 
+		public void SetMaximum(int maxValue)
+		{
+			this.pgBarProcess.Maximum = maxValue;
+		}
+
+		public void InitProgBar()
+		{
+			this.pgBarProcess.Minimum = 0;
+			this.pgBarProcess.Step = 1;
+		}
+
 		public void InitProgBar(int maxValue)
 		{
 			this.pgBarProcess.Minimum = 0;
@@ -28,6 +39,7 @@ namespace CConverter
 		public void PerformProgBar()
 		{
 			this.pgBarProcess.PerformStep();
+			Application.DoEvents();
 		}
 	}
 }

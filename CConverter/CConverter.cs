@@ -70,8 +70,7 @@ namespace CConverter
 			pgView.InitProgBar(lstCode.Count);
 
 			// Thread
-			dm = new DoMethod(this.ConvertFile);
-			Thread trd = new Thread(new ThreadStart(this.DoThread));
+			Thread trd = new Thread(new ThreadStart(this.DoThreadProcess));
 			trd.Start();
 
 			pgView.ShowDialog(this);
@@ -209,13 +208,64 @@ namespace CConverter
 		}
 
 		private Progress pgView;
+		private string[] sp;
 
 		private void lbCC_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] sp = (String[])e.Data.GetData(DataFormats.FileDrop);
+			sp = (String[])e.Data.GetData(DataFormats.FileDrop);
 
 			if (sp.Length == 0)
 				return;
+
+			// Thread
+			Thread trd = new Thread(new ThreadStart(this.DoThreadLoad));
+			trd.Start();
+		}
+
+		private delegate void DoMethod();
+
+		private void ShowProgress()
+		{
+			pgView = new Progress();
+			pgView.InitProgBar();
+
+			pgView.ShowDialog(this);
+		}
+
+		private void ParseFile()
+		{
+			pgView.SetMaximum(lstPreCode.Count);
+
+			foreach (Code cd in lstPreCode)
+			{
+				if (Code.IsCnvFile(cd.Extension))
+				{
+					FileStream fs = new FileStream(cd.FullName, FileMode.Open, FileAccess.Read);
+
+					cd.EncodeType = Code.GetCustomEncoding(fs);
+					cd.EOLFormat = Code.GetEOL(cd.EncodeType, fs);
+
+					lstCode.Add(cd);
+					this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
+
+					fs.Close();
+				}
+
+				pgView.PerformProgBar();
+			}
+
+			pgView.Close();
+
+			this.tsStsLblEC.Text = String.Format("{0} file(s) were loaded.", lstCode.Count);
+		}
+
+		private void DoThreadLoad()
+		{
+			this.tsStsLblEC.Text = "Loading...";
+			this.BeginInvoke(new DoMethod(this.ShowProgress));
+
+			while (pgView == null || !pgView.Created)
+				Thread.Sleep(200);
 
 			if (lstPreCode.Count != 0)
 				lstPreCode.Clear();
@@ -244,59 +294,13 @@ namespace CConverter
 				}
 			}
 
-			if (lstPreCode.Count == 0)
-				return;
-
-			// Thread
-			dm = new DoMethod(this.ShowProgress);
-			Thread trd = new Thread(new ThreadStart(this.DoThread));
-			trd.Start();
+			this.Invoke(new DoMethod(this.ParseFile));
 		}
 
-		private delegate void DoMethod();
-		private DoMethod dm;
-
-		private void ShowProgress()
-		{
-			pgView = new Progress();
-			pgView.InitProgBar(lstPreCode.Count);
-
-			dm = new DoMethod(this.ParseFile);
-			Thread trd = new Thread(new ThreadStart(this.DoThread));
-			trd.Start();
-
-			pgView.ShowDialog(this);
-		}
-
-		private void ParseFile()
-		{
-			foreach (Code cd in lstPreCode)
-			{
-				if (Code.IsCnvFile(cd.Extension))
-				{
-					FileStream fs = new FileStream(cd.FullName, FileMode.Open, FileAccess.Read);
-
-					cd.EncodeType = Code.GetCustomEncoding(fs);
-					cd.EOLFormat = Code.GetEOL(cd.EncodeType, fs);
-
-					lstCode.Add(cd);
-					this.lbCC.Items.Add(cd.FullName + " (" + cd.EncodeString + ", " + cd.EOLFormat.ToString() + ")");
-
-					fs.Close();
-				}
-
-				pgView.PerformProgBar();
-			}
-
-			pgView.Close();
-
-			this.tsStsLblEC.Text = String.Format("{0} file(s) were loaded.", lstCode.Count);
-		}
-
-		private void DoThread()
+		private void DoThreadProcess()
 		{
 			this.tsStsLblEC.Text = "Processing...";
-			this.Invoke(dm);
+			this.Invoke(new DoMethod(this.ConvertFile));
 		}
 	}
 }
