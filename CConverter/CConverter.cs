@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using CConverter.Core;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace CConverter
 {
@@ -17,6 +20,54 @@ namespace CConverter
 			this.cbEncode.SelectedItem = CustomEncoding.UTF8woBOM;
 
 			this.rbUnix.Checked = true;
+
+			InitFileExt();
+		}
+
+		private void InitFileExt()
+		{
+			string xmlpath = @".\CConverter.xml";
+
+			if (!File.Exists(xmlpath))
+			{
+				FileExt.Exts = new string[]{
+					".txt",
+					".as", ".mx", ".mxml",
+					".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".cc",
+					".cs", ".sln", ".csproj", ".resx",
+					".java", ".js", ".jsp",
+					".rc",
+					".vb", ".vbs",
+					".xml", ".xsml", ".xsl", ".xsd", ".kml"
+				};
+
+				FileExt.ExtsXml = FileExt.Exts2Xml(FileExt.Exts);
+
+				XmlWriterSettings xwSet = new XmlWriterSettings();
+				xwSet.Indent = true;
+				xwSet.IndentChars = "\t";
+
+				XmlWriter xWriter = XmlWriter.Create(xmlpath, xwSet);
+				xWriter.WriteStartElement("CConverter");
+				xWriter.WriteStartElement("Settings");
+				xWriter.WriteElementString("FileExtension", FileExt.ExtsXml);
+				xWriter.WriteEndElement();
+				xWriter.WriteEndElement();
+				xWriter.Flush();
+				xWriter.Close();
+
+				return;
+			}
+
+			XPathDocument xptdoc = new XPathDocument(xmlpath);
+			XPathNavigator xptnavi = xptdoc.CreateNavigator();
+
+			XPathNavigator xt = xptnavi.SelectSingleNode("//FileExtension");
+			if (xt == null || String.IsNullOrEmpty(xt.Value))
+				return;
+
+			FileExt.ExtsXml = xt.Value;
+			FileExt.Exts = FileExt.Xml2Exts(FileExt.ExtsXml);
 		}
 
 		private List<Code> lstPreCode = new List<Code>();
@@ -238,7 +289,7 @@ namespace CConverter
 
 			foreach (Code cd in lstPreCode)
 			{
-				if (Code.IsCnvFile(cd.Extension))
+				if (FileExt.IsCnvFile(cd.Extension))
 				{
 					FileStream fs = new FileStream(cd.FullName, FileMode.Open, FileAccess.Read);
 
