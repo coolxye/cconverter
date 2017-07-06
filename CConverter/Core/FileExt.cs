@@ -7,11 +7,14 @@ namespace CConverter.Core
 {
 	class FileExt
 	{
-		public static String[] Exts
-		{ get; set; }
+		//public static String[] Exts
+		//{ get; set; }
 
-		public static String ExtsXml
-		{ get; set; }
+		//public static String ExtsXml
+		//{ get; set; }
+
+		public static List<String> Exts
+		{ get; set;	}
 
 		public static Boolean IsCnvFile(String ext)
 		{
@@ -22,22 +25,22 @@ namespace CConverter.Core
 			return false;
 		}
 
-		public static String Exts2Xml(string[] exts)
-		{
-			string xml = "";
+		//public static String Exts2Xml(string[] exts)
+		//{
+		//	string xml = "";
 
-			foreach (string ext in exts)
-			{
-				xml += ext;
-				xml += ",";
-			}
+		//	foreach (string ext in exts)
+		//	{
+		//		xml += ext;
+		//		xml += ",";
+		//	}
 
-			return xml.Remove(xml.Length - 1);
-		}
+		//	return xml.Remove(xml.Length - 1);
+		//}
 
-		public static String[] Xml2Exts(string xml)
-		{
-			return xml.Split(',');
-		}
+		//public static String[] Xml2Exts(string xml)
+		//{
+		//	return xml.Split(',');
+		//}
 	}
 }

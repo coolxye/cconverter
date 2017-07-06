@@ -30,18 +30,16 @@ namespace CConverter
 
 			if (!File.Exists(xmlpath))
 			{
-				FileExt.Exts = new string[]{
+				FileExt.Exts = new List<String>{
 					".txt",
 					".as", ".mx", ".mxml",
 					".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".cc",
 					".cs", ".sln", ".csproj", ".resx",
 					".java", ".js", ".jsp",
-					".rc",
-					".vb", ".vbs",
-					".xml", ".xsml", ".xsl", ".xsd", ".kml"
+					".xml", ".xsml"
 				};
 
-				FileExt.ExtsXml = FileExt.Exts2Xml(FileExt.Exts);
+				//FileExt.ExtsXml = FileExt.Exts2Xml(FileExt.Exts);
 
 				XmlWriterSettings xwSet = new XmlWriterSettings();
 				xwSet.Indent = true;
@@ -50,7 +48,17 @@ namespace CConverter
 				XmlWriter xWriter = XmlWriter.Create(xmlpath, xwSet);
 				xWriter.WriteStartElement("CConverter");
 				xWriter.WriteStartElement("Settings");
-				xWriter.WriteElementString("FileExtension", FileExt.ExtsXml);
+				xWriter.WriteEndElement();
+				xWriter.WriteStartElement("FileExtension");
+
+				foreach (string str in FileExt.Exts)
+				{
+					xWriter.WriteStartElement("List");
+					xWriter.WriteAttributeString("ext", str);
+					xWriter.WriteEndElement();
+				}
+
+				//xWriter.WriteElementString("FileExtension", FileExt.ExtsXml);
 				xWriter.WriteEndElement();
 				xWriter.WriteEndElement();
 				xWriter.Flush();
@@ -62,12 +70,26 @@ namespace CConverter
 			XPathDocument xptdoc = new XPathDocument(xmlpath);
 			XPathNavigator xptnavi = xptdoc.CreateNavigator();
 
-			XPathNavigator xt = xptnavi.SelectSingleNode("//FileExtension");
-			if (xt == null || String.IsNullOrEmpty(xt.Value))
+			#region
+			/// /根节点名/节点名[@节点属性名=节点属性值]/
+			#endregion
+			//XPathNavigator xt = xptnavi.SelectSingleNode("//FileExtension");
+			//if (xt == null || String.IsNullOrEmpty(xt.Value))
+			//	return;
+
+			//FileExt.ExtsXml = xt.Value;
+			//FileExt.Exts = FileExt.Xml2Exts(FileExt.ExtsXml);
+
+			XPathNodeIterator xpnode = xptnavi.Select("//FileExtension//List/@ext");
+			if (xpnode == null || xpnode.Count < 1)
 				return;
 
-			FileExt.ExtsXml = xt.Value;
-			FileExt.Exts = FileExt.Xml2Exts(FileExt.ExtsXml);
+			FileExt.Exts = new List<string>();
+			while (xpnode.MoveNext())
+			{
+				XPathNavigator xpnavi = xpnode.Current;
+				FileExt.Exts.Add(xpnavi.Value);
+			}
 		}
 
 		private List<Code> lstPreCode = new List<Code>();
