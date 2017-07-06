@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using CConverter.Core;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace CConverter
 {
@@ -17,6 +20,76 @@ namespace CConverter
 			this.cbEncode.SelectedItem = CustomEncoding.UTF8woBOM;
 
 			this.rbUnix.Checked = true;
+
+			InitFileExt();
+		}
+
+		private void InitFileExt()
+		{
+			string xmlpath = @".\CConverter.xml";
+
+			if (!File.Exists(xmlpath))
+			{
+				FileExt.Exts = new List<String>{
+					".txt",
+					".as", ".mx", ".mxml",
+					".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".cc",
+					".cs", ".sln", ".csproj", ".resx",
+					".java", ".js", ".jsp",
+					".xml", ".xsml"
+				};
+
+				//FileExt.ExtsXml = FileExt.Exts2Xml(FileExt.Exts);
+
+				XmlWriterSettings xwSet = new XmlWriterSettings();
+				xwSet.Indent = true;
+				xwSet.IndentChars = "\t";
+
+				XmlWriter xWriter = XmlWriter.Create(xmlpath, xwSet);
+				xWriter.WriteStartElement("CConverter");
+				xWriter.WriteStartElement("Settings");
+				xWriter.WriteEndElement();
+				xWriter.WriteStartElement("FileExtension");
+
+				foreach (string str in FileExt.Exts)
+				{
+					xWriter.WriteStartElement("List");
+					xWriter.WriteAttributeString("ext", str);
+					xWriter.WriteEndElement();
+				}
+
+				//xWriter.WriteElementString("FileExtension", FileExt.ExtsXml);
+				xWriter.WriteEndElement();
+				xWriter.WriteEndElement();
+				xWriter.Flush();
+				xWriter.Close();
+
+				return;
+			}
+
+			XPathDocument xptdoc = new XPathDocument(xmlpath);
+			XPathNavigator xptnavi = xptdoc.CreateNavigator();
+
+			#region
+			/// /根节点名/节点名[@节点属性名=节点属性值]/
+			#endregion
+			//XPathNavigator xt = xptnavi.SelectSingleNode("//FileExtension");
+			//if (xt == null || String.IsNullOrEmpty(xt.Value))
+			//	return;
+
+			//FileExt.ExtsXml = xt.Value;
+			//FileExt.Exts = FileExt.Xml2Exts(FileExt.ExtsXml);
+
+			XPathNodeIterator xpnode = xptnavi.Select("//FileExtension//List/@ext");
+			if (xpnode == null || xpnode.Count < 1)
+				return;
+
+			FileExt.Exts = new List<string>();
+			while (xpnode.MoveNext())
+			{
+				XPathNavigator xpnavi = xpnode.Current;
+				FileExt.Exts.Add(xpnavi.Value);
+			}
 		}
 
 		private List<Code> lstPreCode = new List<Code>();
@@ -238,7 +311,7 @@ namespace CConverter
 
 			foreach (Code cd in lstPreCode)
 			{
-				if (Code.IsCnvFile(cd.Extension))
+				if (FileExt.IsCnvFile(cd.Extension))
 				{
 					FileStream fs = new FileStream(cd.FullName, FileMode.Open, FileAccess.Read);
 

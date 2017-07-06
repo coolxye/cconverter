@@ -68,6 +68,7 @@
       <DependentUpon>CConverter.cs</DependentUpon>
     </Compile>
     <Compile Include="Code.cs" />
+    <Compile Include="Core\FileExt.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Progress.cs">
       <SubType>Form</SubType>
